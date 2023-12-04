@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "EG21IzXvhnxOAbQ4RSpxAiJY6UBDeNWq2HzWWPKa8iE=",
+  "Source": "EventopiaAPI",
+  "BasePath": "_content/EventopiaAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
