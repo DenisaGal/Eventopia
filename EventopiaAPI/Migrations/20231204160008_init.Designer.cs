@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EventopiaAPI.Migrations
 {
-    [DbContext(typeof(EventopoiaDBContext))]
+    [DbContext(typeof(EventopiaDBContext))]
     [Migration("20231204160008_init")]
     partial class init
     {

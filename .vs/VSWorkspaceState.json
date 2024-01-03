@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\EventopiaAPI",
+    "\\EventopiaAPI\\DB",
+    "\\EventopiaAPI\\Migrations"
+  ],
+  "SelectedNode": "\\EventopiaAPI\\DB\\AddDB.cs",
+  "PreviewInSolutionExplorer": false
+}

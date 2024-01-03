@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EventopiaAPI.Migrations
 {
-    [DbContext(typeof(EventopoiaDBContext))]
+    [DbContext(typeof(EventopiaDBContext))]
     partial class EventopoiaDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -30,14 +30,13 @@ namespace EventopiaAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
+                    b.Property<int>("capacity")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("location")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -49,9 +48,89 @@ namespace EventopiaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("venue_id")
+                        .HasColumnType("integer");
+
                     b.HasKey("id");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("EventopiaAPI.DB.Location", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.HasKey("id");
+
+                    b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("EventopiaAPI.DB.Preference", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.HasKey("id");
+
+                    b.ToTable("Preferences");
+                });
+
+            modelBuilder.Entity("EventopiaAPI.DB.User", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("email_address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("first_name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("last_name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("location")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("preferences")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("type")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("EventopiaAPI.DB.Venue", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.HasKey("id");
+
+                    b.ToTable("Venues");
                 });
 #pragma warning restore 612, 618
         }
