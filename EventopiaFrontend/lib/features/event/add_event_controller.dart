@@ -1,4 +1,5 @@
 import 'package:awp/core/models/event_model.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -28,7 +29,7 @@ class AddEventController extends GetxController {
     super.onInit();
   }
 
-  void save() {
+  void save() async {
     final event = EventModel(
       name: titleController.text,
       description: descriptionController.text,
@@ -38,6 +39,9 @@ class AddEventController extends GetxController {
     );
 
     //TODO call save endpoint
+    final dio = Dio();
+    final response =
+        await dio.post('http://localhost:', data: {'id': 12, 'name': 'dio'});
 
     clearForm();
   }
