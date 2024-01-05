@@ -15,7 +15,7 @@ class AddEventController extends GetxController {
   late DateTime selectedDate;
 
   @override
-  void onInit() {
+  void onInit() async {
     formKey = GlobalKey<FormState>();
     titleKey = GlobalKey<FormFieldState>();
     locationKey = GlobalKey<FormFieldState>();
@@ -25,19 +25,22 @@ class AddEventController extends GetxController {
     taxController = TextEditingController();
     locationController = TextEditingController();
     dateController = TextEditingController();
+
     super.onInit();
   }
 
-  void save() {
+  void save() async {
     final event = EventModel(
       name: titleController.text,
       description: descriptionController.text,
-      tax: taxController.text,
+      tax: int.tryParse(taxController.text) ?? 0,
       location: locationController.text,
       date: selectedDate,
     );
 
     //TODO call save endpoint
+    /*final dio = Dio();
+    final response = await dio.post('http://localhost:XXXX', data: event.toJson());*/
 
     clearForm();
   }

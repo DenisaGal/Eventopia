@@ -1,8 +1,6 @@
 class Paths {
   //img
-  static const String background = 'assets/img/splash.jpg';
   static const String logo = 'assets/img/splash.jpg';
-
-  //db
-  static const String plants = 'plants';
+  static const String hike = 'assets/img/hike.png';
+  static const String concert = 'assets/img/concert.png';
 }

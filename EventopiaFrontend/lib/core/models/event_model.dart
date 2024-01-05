@@ -1,7 +1,7 @@
 class EventModel {
   String name;
   String description;
-  String tax;
+  int tax;
   String location;
   DateTime date;
   //String imageUrl;

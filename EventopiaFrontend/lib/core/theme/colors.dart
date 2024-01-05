@@ -9,6 +9,7 @@ class AppColorScheme {
   static const Color darkRed = Color(0xFF912E3D);
   static const Color blue = Color(0xFF184D72);
   static const Color darkBlue = Color(0xFF0E3B62);
+  static const Color orange = Color(0xFFFF6516);
 
   static const Color sage = Color(0xFFa7ae9e);
   static const Color secondaryGreen = Color(0xFF838f77);
