@@ -1,5 +1,4 @@
 import 'package:awp/core/models/event_model.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +15,7 @@ class AddEventController extends GetxController {
   late DateTime selectedDate;
 
   @override
-  void onInit() {
+  void onInit() async {
     formKey = GlobalKey<FormState>();
     titleKey = GlobalKey<FormFieldState>();
     locationKey = GlobalKey<FormFieldState>();
@@ -26,6 +25,7 @@ class AddEventController extends GetxController {
     taxController = TextEditingController();
     locationController = TextEditingController();
     dateController = TextEditingController();
+
     super.onInit();
   }
 
@@ -33,15 +33,14 @@ class AddEventController extends GetxController {
     final event = EventModel(
       name: titleController.text,
       description: descriptionController.text,
-      tax: taxController.text,
+      tax: int.tryParse(taxController.text) ?? 0,
       location: locationController.text,
       date: selectedDate,
     );
 
     //TODO call save endpoint
-    final dio = Dio();
-    final response =
-        await dio.post('http://localhost:', data: {'id': 12, 'name': 'dio'});
+    /*final dio = Dio();
+    final response = await dio.post('http://localhost:XXXX', data: event.toJson());*/
 
     clearForm();
   }
