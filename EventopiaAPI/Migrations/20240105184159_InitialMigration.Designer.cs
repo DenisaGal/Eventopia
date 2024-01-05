@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventopiaAPI.Migrations
 {
     [DbContext(typeof(EventopiaDBContext))]
-    [Migration("20240105171517_init-tables")]
-    partial class inittables
+    [Migration("20240105184159_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace EventopiaAPI.Migrations
 
                     b.HasIndex("EventsId");
 
-                    b.ToTable("EventCategory", (string)null);
+                    b.ToTable("EventCategories", (string)null);
                 });
 
             modelBuilder.Entity("EventopiaAPI.DB.Event", b =>
@@ -48,9 +48,8 @@ namespace EventopiaAPI.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Cost")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Cost")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
@@ -92,6 +91,24 @@ namespace EventopiaAPI.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("EventopiaAPI.DB.Models.UserPreference", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("UserId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("UserPreferences");
+                });
+
             modelBuilder.Entity("EventopiaAPI.DB.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -126,7 +143,7 @@ namespace EventopiaAPI.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("EventUser");
+                    b.ToTable("UserEvents", (string)null);
                 });
 
             modelBuilder.Entity("CategoryEvent", b =>
@@ -144,6 +161,21 @@ namespace EventopiaAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("EventopiaAPI.DB.Models.UserPreference", b =>
+                {
+                    b.HasOne("EventopiaAPI.DB.Models.Category", null)
+                        .WithMany("UserPreferences")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventopiaAPI.DB.User", null)
+                        .WithMany("UserPreferences")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EventUser", b =>
                 {
                     b.HasOne("EventopiaAPI.DB.Event", null)
@@ -157,6 +189,16 @@ namespace EventopiaAPI.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventopiaAPI.DB.Models.Category", b =>
+                {
+                    b.Navigation("UserPreferences");
+                });
+
+            modelBuilder.Entity("EventopiaAPI.DB.User", b =>
+                {
+                    b.Navigation("UserPreferences");
                 });
 #pragma warning restore 612, 618
         }

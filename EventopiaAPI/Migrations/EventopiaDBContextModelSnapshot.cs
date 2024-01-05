@@ -46,9 +46,8 @@ namespace EventopiaAPI.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Cost")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Cost")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");

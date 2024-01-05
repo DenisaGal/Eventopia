@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EventopiaAPI.Migrations
 {
-    public partial class inittables : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,7 +28,7 @@ namespace EventopiaAPI.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    Cost = table.Column<string>(type: "text", nullable: false),
+                    Cost = table.Column<int>(type: "integer", nullable: false),
                     Location = table.Column<string>(type: "text", nullable: false),
                     Capacity = table.Column<int>(type: "integer", nullable: false),
                     SoldTickets = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
@@ -53,7 +53,7 @@ namespace EventopiaAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventCategory",
+                name: "EventCategories",
                 columns: table => new
                 {
                     CategoriesId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -61,15 +61,15 @@ namespace EventopiaAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EventCategory", x => new { x.CategoriesId, x.EventsId });
+                    table.PrimaryKey("PK_EventCategories", x => new { x.CategoriesId, x.EventsId });
                     table.ForeignKey(
-                        name: "FK_EventCategory_Categories_CategoriesId",
+                        name: "FK_EventCategories_Categories_CategoriesId",
                         column: x => x.CategoriesId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EventCategory_Events_EventsId",
+                        name: "FK_EventCategories_Events_EventsId",
                         column: x => x.EventsId,
                         principalTable: "Events",
                         principalColumn: "Id",
@@ -77,7 +77,7 @@ namespace EventopiaAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventUser",
+                name: "UserEvents",
                 columns: table => new
                 {
                     EventsId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -85,30 +85,60 @@ namespace EventopiaAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EventUser", x => new { x.EventsId, x.UsersId });
+                    table.PrimaryKey("PK_UserEvents", x => new { x.EventsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_EventUser_Events_EventsId",
+                        name: "FK_UserEvents_Events_EventsId",
                         column: x => x.EventsId,
                         principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EventUser_Users_UsersId",
+                        name: "FK_UserEvents_Users_UsersId",
                         column: x => x.UsersId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserPreferences",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Rating = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPreferences", x => new { x.UserId, x.CategoryId });
+                    table.ForeignKey(
+                        name: "FK_UserPreferences_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserPreferences_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_EventCategory_EventsId",
-                table: "EventCategory",
+                name: "IX_EventCategories_EventsId",
+                table: "EventCategories",
                 column: "EventsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventUser_UsersId",
-                table: "EventUser",
+                name: "IX_UserEvents_UsersId",
+                table: "UserEvents",
                 column: "UsersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPreferences_CategoryId",
+                table: "UserPreferences",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_EmailAddress",
@@ -120,16 +150,19 @@ namespace EventopiaAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "EventCategory");
+                name: "EventCategories");
 
             migrationBuilder.DropTable(
-                name: "EventUser");
+                name: "UserEvents");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "UserPreferences");
 
             migrationBuilder.DropTable(
                 name: "Events");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Users");
