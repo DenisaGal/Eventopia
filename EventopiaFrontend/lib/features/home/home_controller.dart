@@ -1,10 +1,11 @@
 import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/event_model.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  late List<EventModel> events = [];
-  late List<CategoryModel> categories = [];
+  late RxList<EventModel> events = <EventModel>[].obs;
+  late RxList<CategoryModel> categories = <CategoryModel>[].obs;
 
   @override
   void onInit() async {
@@ -15,18 +16,17 @@ class HomeController extends GetxController {
   }
 
   Future<void> _loadEvents() async {
-    events.add(EventModel(
-        name: "Concert Om la luna",
-        description: "Trupa Om la luna revine la Timisoara!!",
-        tax: 80,
-        location: "Timisoara",
-        date: DateTime.now()));
-    events.add(EventModel(
-        name: "Hike Retezat",
-        description: "Urcare pana la Lacul Bucura prin Muntii Retezat",
-        tax: 20,
-        location: "Retezat",
-        date: DateTime.now()));
+    final dio = Dio();
+    try {
+      final response = await dio.get('http://localhost:46772/events');
+      events.clear();
+      List<EventModel> dbEvents = (response.data as List)
+          .map((item) => EventModel.fromJson(item))
+          .toList();
+      events.addAll(dbEvents);
+    } catch (e) {
+      final ex = e; //TODO show popup
+    }
   }
 
   Future<void> _loadCategories() async {
