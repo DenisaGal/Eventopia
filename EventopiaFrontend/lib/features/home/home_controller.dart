@@ -1,3 +1,4 @@
+import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/event_model.dart';
 import 'package:dio/dio.dart';
@@ -18,7 +19,7 @@ class HomeController extends GetxController {
   Future<void> _loadEvents() async {
     final dio = Dio();
     try {
-      final response = await dio.get('http://localhost:46772/events');
+      final response = await dio.get('${Connection.baseUrl}events');
       events.clear();
       List<EventModel> dbEvents = (response.data as List)
           .map((item) => EventModel.fromJson(item))

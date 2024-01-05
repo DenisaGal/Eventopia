@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/event_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -41,10 +42,9 @@ class AddEventController extends GetxController {
       date: selectedDate,
     );
 
-    //TODO call save endpoint
     final dio = Dio();
     try {
-      final response = await dio.post('http://localhost:46772/events',
+      final response = await dio.post('${Connection.baseUrl}events',
           data: jsonEncode(event));
     } catch (e) {}
 
