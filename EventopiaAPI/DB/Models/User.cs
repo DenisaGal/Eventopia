@@ -1,8 +1,11 @@
-﻿namespace EventopiaAPI.DB
+﻿using Npgsql.Internal.TypeHandlers;
+using System.ComponentModel.DataAnnotations;
+
+namespace EventopiaAPI.DB
 {
     public class User
     {
-        public int id { get; set; }
+        [Key] public Guid gid { get; set; }
         public string first_name { get; set; }
         public string last_name { get; set; }
         public string email_address { get; set; }

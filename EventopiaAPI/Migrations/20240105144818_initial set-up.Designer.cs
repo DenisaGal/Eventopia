@@ -3,6 +3,7 @@ using System;
 using EventopiaAPI.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventopiaAPI.Migrations
 {
     [DbContext(typeof(EventopiaDBContext))]
-    partial class EventopoiaDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240105144818_initial set-up")]
+    partial class initialsetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,6 +35,10 @@ namespace EventopiaAPI.Migrations
                     b.Property<int>("capacity")
                         .HasColumnType("integer");
 
+                    b.Property<string>("category")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("date")
                         .HasColumnType("timestamp with time zone");
 
@@ -48,6 +54,9 @@ namespace EventopiaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("tickets")
+                        .HasColumnType("integer");
+
                     b.Property<int>("venue_id")
                         .HasColumnType("integer");
 
@@ -56,13 +65,34 @@ namespace EventopiaAPI.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("EventopiaAPI.DB.Models.Address", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("city")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("county")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("addresses");
+                });
+
             modelBuilder.Entity("EventopiaAPI.DB.User", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<Guid>("gid")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("email_address")
                         .IsRequired()
@@ -89,7 +119,7 @@ namespace EventopiaAPI.Migrations
                     b.Property<bool>("type")
                         .HasColumnType("boolean");
 
-                    b.HasKey("id");
+                    b.HasKey("gid");
 
                     b.ToTable("Users");
                 });

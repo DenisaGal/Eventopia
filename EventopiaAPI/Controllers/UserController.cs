@@ -22,14 +22,14 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpGet(Name = "GetUserDetails")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? gid)
         {
-            if(id == null || _context.Users == null)
+            if(gid == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.gid == gid);
             if(user == null)
             {
                 return NotFound();
@@ -46,7 +46,7 @@ namespace EventopiaAPI.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,first_name,last_name,email_address,password,location,preferences,type")] User user)
+        public async Task<IActionResult> Create([Bind("gid,first_name,last_name,email_address,password,location,preferences,type")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -58,14 +58,14 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpGet(Name = "GetEditUser")]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? gid)
         {
-            if (id == null || _context.Users == null)
+            if (gid == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(gid);
             if (user == null)
             {
                 return NotFound();
@@ -74,14 +74,14 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpGet(Name = "GetUserType")]
-        public async Task<IActionResult> Type(int? id)
+        public async Task<IActionResult> Type(Guid? gid)
         {
-            if (id == null || _context.Users == null)
+            if (gid == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.gid == gid);
             if (user == null)
             {
                 return NotFound();
@@ -92,9 +92,9 @@ namespace EventopiaAPI.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,first_name,last_name,email_address,password,location,preferences,type")] User user)
+        public async Task<IActionResult> Edit(Guid gid, [Bind("gid,first_name,last_name,email_address,password,location,preferences,type")] User user)
         {
-            if (id != user.id)
+            if (gid != user.gid)
             {
                 return NotFound();
             }
@@ -108,7 +108,7 @@ namespace EventopiaAPI.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.id))
+                    if (!UserExists(user.gid))
                     {
                         return NotFound();
                     }
@@ -123,15 +123,15 @@ namespace EventopiaAPI.Controllers
         }
 
         [NonAction]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? gid)
         {
-            if (id == null || _context.Users == null)
+            if (gid == null || _context.Users == null)
             {
                 return NotFound();
             }
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.gid == gid);
             if (user == null)
             {
                 return NotFound();
@@ -142,13 +142,13 @@ namespace EventopiaAPI.Controllers
 
         [HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid gid)
         {
             if (_context.Users == null)
             {
                 return Problem("Entity set 'EventopiaDBContext.Users'  is null.");
             }
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(gid);
             if (user != null)
             {
                 _context.Users.Remove(user);
@@ -158,9 +158,9 @@ namespace EventopiaAPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool UserExists(Guid gid)
         {
-            return (_context.Users?.Any(e => e.id == id)).GetValueOrDefault();
+            return (_context.Users?.Any(e => e.gid == gid)).GetValueOrDefault();
         }
     }
 }
