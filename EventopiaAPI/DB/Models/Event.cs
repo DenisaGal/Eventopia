@@ -1,14 +1,19 @@
-﻿namespace EventopiaAPI.DB
+﻿using EventopiaAPI.DB.Models;
+
+namespace EventopiaAPI.DB
 {
     public class Event
     {
-        public Guid id { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
-        public string cost { get; set; }
-        public string location { get; set; }
-        public int capacity { get; set; }
-        public int sold_tickets { get; set; }
-        public DateTime date { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Cost { get; set; }
+        public string Location { get; set; }
+        public int Capacity { get; set; }
+        public int SoldTickets { get; set; }
+        public DateTime Date { get; set; }
+
+        public ICollection<User> Users { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }

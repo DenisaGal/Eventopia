@@ -2,7 +2,10 @@
 {
     public class Category
     {
-        public Guid id { get; set; }
-        public string name { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+
+        public ICollection<Event> Events { get; set; }
+        public ICollection<UserPreference> UserPreferences { get; set; }
     }
 }
