@@ -10,5 +10,11 @@
         public int location {  get; set; }
         public int preferences {  get; set; }
         public bool type { get; set; }
+
+        public User()
+        {
+            
+
+        }
     }
 }

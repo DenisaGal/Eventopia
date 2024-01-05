@@ -1,4 +1,5 @@
 ﻿using EventopiaAPI.DB;
+using EventopiaAPI.DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,7 +48,7 @@ namespace EventopiaAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,name,description,tax,venue_id,capacity,date")] Event @event)
         {
             if (ModelState.IsValid)

@@ -45,7 +45,7 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,first_name,last_name,email_address,password,location,preferences,type")] User user)
         {
             if (ModelState.IsValid)
@@ -91,7 +91,7 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,first_name,last_name,email_address,password,location,preferences,type")] User user)
         {
             if (id != user.id)
@@ -141,7 +141,7 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Users == null)

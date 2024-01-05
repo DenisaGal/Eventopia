@@ -1,4 +1,4 @@
-﻿namespace EventopiaAPI.DB
+﻿namespace EventopiaAPI.DB.Models
 {
     public class Location
     {

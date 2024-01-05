@@ -3,6 +3,7 @@ import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
 import 'package:awp/features/event/add_event_page.dart';
 import 'package:awp/features/home/home_controller.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -85,7 +86,13 @@ class HomePage extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              Get.offAll(AddEventPage());
+              // Get.offAll(AddEventPage());
+              final dio = Dio();
+
+              void getHttp() async {
+                final response = await dio.get('https://localhost:7003/Event/Create');
+                print(response);
+              }
             },
             child: const Text("Add event"),
           )
