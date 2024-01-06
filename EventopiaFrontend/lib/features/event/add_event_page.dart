@@ -153,7 +153,68 @@ class AddEventPage extends StatelessWidget {
                       },
                     ),
                     const SizedBox(
-                      height: 40,
+                      height: 10,
+                    ),
+                    SizedBox(
+                      height: 50,
+                      child: Obx(
+                        () => ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: controller.categories.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final category = controller.categories[index];
+
+                            return Row(
+                              children: [
+                                Obx(
+                                  () => InkWell(
+                                    onTap: () {
+                                      controller
+                                          .editSelectedCategories(category.id);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: !controller.selectedCategories
+                                                  .contains(category.id)
+                                              ? Border.all(
+                                                  color: AppColorScheme.orange)
+                                              : null,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: !controller.selectedCategories
+                                                  .contains(category.id)
+                                              ? AppColorScheme.white
+                                              : AppColorScheme.orange),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 8,
+                                        ),
+                                        child: Text(
+                                          category.name,
+                                          style: TextStyle(
+                                              color: !controller
+                                                      .selectedCategories
+                                                      .contains(category.id)
+                                                  ? AppColorScheme.orange
+                                                  : AppColorScheme.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     Row(
                       children: [

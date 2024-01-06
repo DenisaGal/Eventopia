@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EventopiaAPI.Controllers
 {
     [ApiController]
-    [Route("categories")]
+    [Route("[controller]/[action]")]
     public class CategoryController : Controller
     {
         private readonly EventopiaDBContext _context;

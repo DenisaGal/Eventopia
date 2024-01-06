@@ -1,12 +1,15 @@
 import 'dart:convert';
 
 import 'package:awp/core/constants/connection.dart';
+import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/event_model.dart';
+import 'package:awp/core/widgets/error_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddEventController extends GetxController {
+  late final Dio dio;
   late final GlobalKey<FormState> formKey;
   late final GlobalKey<FormFieldState> titleKey;
   late final GlobalKey<FormFieldState> locationKey;
@@ -17,6 +20,8 @@ class AddEventController extends GetxController {
   late final TextEditingController locationController;
   late final TextEditingController dateController;
   late DateTime selectedDate;
+  late RxList<CategoryModel> categories = <CategoryModel>[].obs;
+  late RxList<String> selectedCategories = <String>[].obs;
 
   @override
   void onInit() async {
@@ -30,7 +35,25 @@ class AddEventController extends GetxController {
     locationController = TextEditingController();
     dateController = TextEditingController();
 
+    dio = Dio();
+
+    await _loadCategories();
+
     super.onInit();
+  }
+
+  Future<void> _loadCategories() async {
+    try {
+      final response =
+          await dio.get('${Connection.baseUrl}/Category/GetCategories');
+      categories.clear();
+      List<CategoryModel> dbCategories = (response.data as List)
+          .map((item) => CategoryModel.fromJson(item))
+          .toList();
+      categories.addAll(dbCategories);
+    } catch (_) {
+      await ErrorDialog.show("Failed to load categories.");
+    }
   }
 
   void save() async {
@@ -40,13 +63,15 @@ class AddEventController extends GetxController {
       cost: int.tryParse(taxController.text) ?? 0,
       location: locationController.text,
       date: selectedDate,
+      categories: selectedCategories,
     );
 
-    final dio = Dio();
     try {
-      final response = await dio.post('${Connection.baseUrl}/events',
+      await dio.post('${Connection.baseUrl}/Event/Create',
           data: jsonEncode(event));
-    } catch (e) {}
+    } catch (_) {
+      await ErrorDialog.show("Failed to create event.");
+    }
 
     clearForm();
   }
@@ -57,5 +82,13 @@ class AddEventController extends GetxController {
     taxController.clear();
     locationController.clear();
     dateController.clear();
+  }
+
+  void editSelectedCategories(String categoryId) {
+    if (selectedCategories.contains(categoryId)) {
+      selectedCategories.remove(categoryId);
+    } else {
+      selectedCategories.add(categoryId);
+    }
   }
 }

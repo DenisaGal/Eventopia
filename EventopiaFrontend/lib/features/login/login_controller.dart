@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/user_model.dart';
+import 'package:awp/core/widgets/error_dialog.dart';
 import 'package:awp/features/home/home_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class LoginController extends GetxController {
     final user = UserModel(
       email: emailController.text,
       password: passwordController.text,
-      isOrganizer: /*bool.tryParse(typeController.text) ?? */ false,
+      isOrganizer: /*bool.tryParse(typeController.text) ?? */ false, //TODO
     );
 
     final dio = Dio();
@@ -39,7 +40,9 @@ class LoginController extends GetxController {
 
       clearForm();
       Get.to(() => HomePage(), arguments: response.data);
-    } catch (e) {}
+    } catch (_) {
+      await ErrorDialog.show("Failed to login.");
+    }
   }
 
   void clearForm() {

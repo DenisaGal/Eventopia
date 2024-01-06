@@ -89,7 +89,7 @@ class HomePage extends StatelessWidget {
                               border: Border.all(color: AppColorScheme.darkRed),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            height: 200,
+                            height: 300,
                             width: 400,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -122,8 +122,9 @@ class HomePage extends StatelessWidget {
                                                           .star_border_rounded,
                                                   color: AppColorScheme.yellow,
                                                   size: 28),
-                                              onPressed: () {
-                                                //TODO add user event
+                                              onPressed: () async {
+                                                await controller
+                                                    .editUserEvent(event.id);
                                               },
                                               splashColor: Colors.transparent,
                                               highlightColor:
@@ -200,6 +201,53 @@ class HomePage extends StatelessWidget {
                                         ),
                                       ),
                                     ],
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      itemCount: event.categories?.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final categoryId =
+                                            event.categories?[index];
+
+                                        return Row(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color:
+                                                        AppColorScheme.orange),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 4,
+                                                  horizontal: 8,
+                                                ),
+                                                child: Text(
+                                                  controller.categories
+                                                      .firstWhere((c) =>
+                                                          c.id == categoryId)
+                                                      .name,
+                                                  style: const TextStyle(
+                                                      color: AppColorScheme
+                                                          .orange),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ],
                               ),
