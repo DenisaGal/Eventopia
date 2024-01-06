@@ -1,5 +1,5 @@
 import 'package:awp/core/theme/colors.dart';
-import 'package:awp/features/home/home_page.dart';
+import 'package:awp/features/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.w300,
             ),
           )),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }

@@ -44,7 +44,7 @@ class AddEventController extends GetxController {
 
     final dio = Dio();
     try {
-      final response = await dio.post('${Connection.baseUrl}events',
+      final response = await dio.post('${Connection.baseUrl}/events',
           data: jsonEncode(event));
     } catch (e) {}
 

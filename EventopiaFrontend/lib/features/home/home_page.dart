@@ -3,6 +3,7 @@ import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
 import 'package:awp/features/event/add_event_page.dart';
 import 'package:awp/features/home/home_controller.dart';
+import 'package:awp/features/user_events/user_events_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,9 +17,16 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const HeaderBar(
-            title: "Home",
+          HeaderBar(
+            title: "Eventopia",
             icon: Icons.home,
+            onHomePressed: () {
+              Get.offAll(HomePage());
+            },
+            secondPage: "My Events",
+            onSecondPressed: () {
+              Get.offAll(UserEventsPage());
+            },
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -27,33 +35,40 @@ class HomePage extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 50,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: controller.categories.length,
-                    //shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      final category = controller.categories[index];
+                  child: Obx(
+                    () => ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: controller.categories.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final category = controller.categories[index];
 
-                      return Row(
-                        children: [
-                          Text(
-                            category.name,
-                            style:
-                                const TextStyle(color: AppColorScheme.orange),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          )
-                        ],
-                      );
-                    },
+                        return Row(
+                          children: [
+                            Text(
+                              category.name,
+                              style:
+                                  const TextStyle(color: AppColorScheme.orange),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            )
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                const Text("Most popular / recent events"),
+                const Text(
+                  "Events",
+                  style: TextStyle(
+                      color: AppColorScheme.darkBlue,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -82,12 +97,44 @@ class HomePage extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text(
-                                    event.name,
-                                    style: const TextStyle(
-                                        color: AppColorScheme.darkRed,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600),
+                                  SizedBox(
+                                    height: 40,
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Center(
+                                          child: Text(
+                                            event.name,
+                                            style: const TextStyle(
+                                                color: AppColorScheme.darkRed,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                        Container(
+                                          alignment: Alignment.topRight,
+                                          child: Obx(
+                                            () => IconButton(
+                                              icon: Icon(
+                                                  controller.isSelected.value
+                                                      ? Icons.star_rounded
+                                                      : Icons
+                                                          .star_border_rounded,
+                                                  color: AppColorScheme.yellow,
+                                                  size: 28),
+                                              onPressed: () {
+                                                controller.isSelected.value =
+                                                    !controller
+                                                        .isSelected.value;
+                                              },
+                                              splashColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   Text(
                                     event.description,
@@ -167,11 +214,17 @@ class HomePage extends StatelessWidget {
                     },
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Get.offAll(AddEventPage());
-                  },
-                  child: const Text("Add event"),
+                const SizedBox(
+                  height: 20,
+                ),
+                Visibility(
+                  visible: true, //TODO if user is admin
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.offAll(AddEventPage());
+                    },
+                    child: const Text("Add event"),
+                  ),
                 )
               ],
             ),

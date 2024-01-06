@@ -21,6 +21,7 @@ class LoginController extends GetxController {
   }
 
   Future login() async {
-    Get.offAll(HomePage());
+    Get.to(() => HomePage(),
+        arguments: ["99b8c4c5-520b-4d3b-879e-d1bbf03dcb52"] /*TODO user id */);
   }
 }
