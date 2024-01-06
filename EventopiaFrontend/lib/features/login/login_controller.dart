@@ -1,6 +1,9 @@
 import 'package:awp/features/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:awp/core/models/user_model.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
 
 class LoginController extends GetxController {
   late final GlobalKey<FormState> formKey;
@@ -8,6 +11,7 @@ class LoginController extends GetxController {
   late final GlobalKey<FormFieldState> passwordKey;
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
+  late final TextEditingController typeController;
 
   @override
   void onInit() {
@@ -16,12 +20,32 @@ class LoginController extends GetxController {
     passwordKey = GlobalKey<FormFieldState>();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    typeController = TextEditingController();
 
     super.onInit();
   }
 
-  Future login() async {
-    Get.to(() => HomePage(),
-        arguments: ["99b8c4c5-520b-4d3b-879e-d1bbf03dcb52"] /*TODO user id */);
+  void login() async {
+    final user = UserModel(
+      email: emailController.text,
+      password: passwordController.text,
+      type: bool.tryParse(typeController.text) ?? false,
+    );
+
+    final dio = Dio();
+    try {
+      final response = await dio.post('http://localhost:46772/User/LoginUser',
+          data: jsonEncode(user));
+          Get.offAll(HomePage());
+    } catch (e) {}
+
+    clearForm();
   }
+
+  void clearForm() {
+    emailController.clear();
+    passwordController.clear();
+    typeController.clear();
+  }
+    //Get.offAll(HomePage());
 }
