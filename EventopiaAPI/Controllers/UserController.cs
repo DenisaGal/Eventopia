@@ -100,7 +100,7 @@ namespace EventopiaAPI.Controllers
                 _context.Users.Add(new User
                 {
                     Id = Guid.NewGuid(),
-                    EmailAddress = newUser.EmailAddress,
+                    EmailAddress = newUser.Email,
                     Password = BCrypt.Net.BCrypt.EnhancedHashPassword(newUser.Password, 13),
                     Type = newUser.Type,
                 });
@@ -113,12 +113,12 @@ namespace EventopiaAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginUser([FromBody] UserDto newUser)
         {
-            if (newUser.EmailAddress == null || _context.Users == null)
+            if (newUser.Email == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.EmailAddress == newUser.EmailAddress);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.EmailAddress == newUser.Email);
             if (user == null)
             {
                 return NotFound();

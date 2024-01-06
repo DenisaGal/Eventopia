@@ -34,8 +34,9 @@ class LoginController extends GetxController {
 
     final dio = Dio();
     try {
-      final response = await dio.post('https://localhost:46772/User/LoginUser',
-          data: jsonEncode(user)); //46772
+      final response = await dio.post('http://localhost:46772/User/LoginUser',
+          data: jsonEncode(user));
+          Get.offAll(HomePage());
     } catch (e) {}
 
     clearForm();
