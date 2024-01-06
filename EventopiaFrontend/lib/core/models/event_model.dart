@@ -5,7 +5,7 @@ class EventModel {
   final int cost;
   final String location;
   final DateTime date;
-  List<String> categories;
+  List<String>? categories;
 
   //String imageUrl;
 
@@ -16,7 +16,7 @@ class EventModel {
     required this.cost,
     required this.location,
     required this.date,
-    required this.categories,
+    this.categories,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
