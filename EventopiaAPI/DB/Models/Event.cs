@@ -19,6 +19,7 @@ namespace EventopiaAPI.DB
         public int SoldTickets { get; set; }
 
         public DateTime Date { get; set; }
+        public byte[]? Image { get; set; }
 
         public ICollection<User> Users { get; set; } = null!;
 

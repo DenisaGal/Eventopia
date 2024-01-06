@@ -152,6 +152,30 @@ class AddEventPage extends StatelessWidget {
                         }
                       },
                     ),
+                    Obx(
+                          () => Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              readOnly: true,
+                              decoration: const InputDecoration(
+                                hintText: 'Select picture',
+                              ),
+                              controller: controller.templateUploadController,
+                              autovalidateMode: controller.selectedFile.value != null ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: controller.selectFile,
+                            child: Text('Browse'.tr),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 40,
                     ),

@@ -5,6 +5,8 @@ import 'package:awp/core/models/event_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 
 class AddEventController extends GetxController {
   late final GlobalKey<FormState> formKey;
@@ -29,6 +31,7 @@ class AddEventController extends GetxController {
     taxController = TextEditingController();
     locationController = TextEditingController();
     dateController = TextEditingController();
+    templateUploadController = TextEditingController();
 
     super.onInit();
   }
@@ -49,6 +52,23 @@ class AddEventController extends GetxController {
     } catch (e) {}
 
     clearForm();
+  }
+
+  late Rxn<Uint8List> selectedFile =  Rxn<Uint8List>();
+  late final TextEditingController templateUploadController;
+
+  Future<void> selectFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png'],
+      );
+      if (result != null && result.files.isNotEmpty) {
+        selectedFile.value = result.files.first.bytes;
+        templateUploadController.text = result.files.first.name;
+      }
+    } catch (e) {
+    }
   }
 
   void clearForm() {

@@ -36,6 +36,7 @@ namespace EventopiaAPI.Controllers
                     Location = newEvent.Location,
                     Capacity = 0,
                     Date = DateTime.SpecifyKind(newEvent.Date, DateTimeKind.Utc),
+                    Image = newEvent.Image,
                 });
                 await _context.SaveChangesAsync();
             }
