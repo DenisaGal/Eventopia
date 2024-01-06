@@ -8,13 +8,14 @@ class EventModel {
 
   //String imageUrl;
 
-  const EventModel(
-      {this.id,
-      required this.description,
-      required this.name,
-      required this.cost,
-      required this.location,
-      required this.date});
+  const EventModel({
+    this.id,
+    required this.description,
+    required this.name,
+    required this.cost,
+    required this.location,
+    required this.date,
+  });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(

@@ -5,11 +5,15 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  late final Dio dio;
   late RxList<EventModel> events = <EventModel>[].obs;
   late RxList<CategoryModel> categories = <CategoryModel>[].obs;
+  RxBool isSelected = false.obs;
 
   @override
   void onInit() async {
+    dio = Dio();
+
     await _loadEvents();
     await _loadCategories();
 
@@ -17,9 +21,8 @@ class HomeController extends GetxController {
   }
 
   Future<void> _loadEvents() async {
-    final dio = Dio();
     try {
-      final response = await dio.get('${Connection.baseUrl}events');
+      final response = await dio.get('${Connection.baseUrl}/events');
       events.clear();
       List<EventModel> dbEvents = (response.data as List)
           .map((item) => EventModel.fromJson(item))
@@ -31,13 +34,15 @@ class HomeController extends GetxController {
   }
 
   Future<void> _loadCategories() async {
-    categories.add(CategoryModel(
-      id: "1",
-      name: "Music",
-    ));
-    categories.add(CategoryModel(
-      id: "2",
-      name: "Outdoors",
-    ));
+    try {
+      final response = await dio.get('${Connection.baseUrl}/categories');
+      categories.clear();
+      List<CategoryModel> dbCategories = (response.data as List)
+          .map((item) => CategoryModel.fromJson(item))
+          .toList();
+      categories.addAll(dbCategories);
+    } catch (e) {
+      final ex = e; //TODO show popup
+    }
   }
 }

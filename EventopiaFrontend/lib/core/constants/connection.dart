@@ -1,3 +1,3 @@
 class Connection {
-  static const String baseUrl = 'http://localhost:46772/';
+  static const String baseUrl = 'http://localhost:46772';
 }
