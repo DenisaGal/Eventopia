@@ -2,6 +2,7 @@ import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/event_model.dart';
 import 'package:awp/core/models/user_details_model.dart';
+import 'package:awp/core/widgets/error_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
@@ -34,8 +35,8 @@ class HomeController extends GetxController {
           .map((item) => EventModel.fromJson(item))
           .toList();
       events.addAll(dbEvents);
-    } catch (e) {
-      final ex = e; //TODO show popup
+    } catch (_) {
+      await ErrorDialog.show("Failed to load events.");
     }
   }
 
@@ -48,8 +49,8 @@ class HomeController extends GetxController {
           .map((item) => CategoryModel.fromJson(item))
           .toList();
       categories.addAll(dbCategories);
-    } catch (e) {
-      final ex = e; //TODO show popup
+    } catch (_) {
+      await ErrorDialog.show("Failed to load categories.");
     }
   }
 
@@ -58,8 +59,8 @@ class HomeController extends GetxController {
       final response =
           await dio.get('${Connection.baseUrl}/User/GetUserById/?id=$userId');
       user.value = UserDetailsModel.fromJson(response.data);
-    } catch (e) {
-      final ex = e; //TODO show popup
+    } catch (_) {
+      await ErrorDialog.show("Failed to load events.");
     }
   }
 
@@ -72,8 +73,8 @@ class HomeController extends GetxController {
       final response = await dio.post(
           '${Connection.baseUrl}/Event/EditUserEvents?userId=$userId&eventId=$eventId');
       await _loadUser(userId);
-    } catch (e) {
-      final ex = e; //TODO show popup
+    } catch (_) {
+      await ErrorDialog.show("Failed to edit user events.");
     }
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/event_model.dart';
+import 'package:awp/core/widgets/error_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,7 +47,9 @@ class AddEventController extends GetxController {
     try {
       final response = await dio.post('${Connection.baseUrl}/Event/Create',
           data: jsonEncode(event));
-    } catch (e) {}
+    } catch (_) {
+      await ErrorDialog.show("Failed to create event.");
+    }
 
     clearForm();
   }
