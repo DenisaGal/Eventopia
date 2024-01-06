@@ -12,7 +12,7 @@ class RegisterController extends GetxController {
   late final GlobalKey<FormFieldState> passwordKey;
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
-  late final TextEditingController typeController;
+  late final TextEditingController isOrganizerController;
 
   @override
   void onInit() {
@@ -21,7 +21,7 @@ class RegisterController extends GetxController {
     passwordKey = GlobalKey<FormFieldState>();
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    typeController = TextEditingController();
+    isOrganizerController = TextEditingController();
 
     super.onInit();
   }
@@ -30,7 +30,7 @@ class RegisterController extends GetxController {
     final user = UserModel(
       email: emailController.text,
       password: passwordController.text,
-      type: bool.tryParse(typeController.text) ?? false,
+      isOrganizer: /*bool.tryParse(typeController.text) ?? */ false,
     );
 
     final dio = Dio();
@@ -46,6 +46,6 @@ class RegisterController extends GetxController {
   void clearForm() {
     emailController.clear();
     passwordController.clear();
-    typeController.clear();
+    isOrganizerController.clear();
   }
 }
