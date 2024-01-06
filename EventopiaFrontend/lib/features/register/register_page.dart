@@ -11,6 +11,7 @@ class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
 
   final controller = Get.put(RegisterController());
+  var checkedValue = false;
 
   @override
   Widget build(BuildContext context) {
@@ -127,50 +128,6 @@ class RegisterPage extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 40),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Type',
-                            labelStyle:
-                            const TextStyle(color: AppColorScheme.blue),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50.0),
-                              borderSide: const BorderSide(
-                                width: 0,
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: AppColorScheme.white,
-                            hoverColor: AppColorScheme.white,
-                          ),
-                          controller: controller.typeController,
-                          key: controller.typeKey,
-                          onChanged: (value) {
-                            if (controller.typeKey.currentState!.hasError) {
-                              controller.typeKey.currentState!.validate();
-                            }
-                          },
-                          validator: (value) {
-                            var mandatoryInputValidation =
-                            InputValidator.validate(
-                                value, 'Mandatory field');
-                            if (mandatoryInputValidation != null &&
-                                mandatoryInputValidation.isNotEmpty) {
-                              return mandatoryInputValidation;
-                            }
-                            var emailValidator = InputValidator.validateType(
-                                value, 'Invalid type');
-                            if (emailValidator != null &&
-                                emailValidator.isNotEmpty) {
-                              return emailValidator;
-                            }
-                            return null;
-                          },
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(255),
-                          ],
-                        ),
-                        const SizedBox(height: 15),
                         ElevatedButton(
                           onPressed: () {
                             if (controller.formKey.currentState!.validate()) {
@@ -187,14 +144,14 @@ class RegisterPage extends StatelessWidget {
                               ),
                               backgroundColor: AppColorScheme.darkBlue),
                           child: const Text(
-                            'Login',
+                            'Register',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
                         const SizedBox(height: 15),
                         RichText(
                           text: TextSpan(
-                            text: 'Register',
+                            text: 'Login',
                             style: const TextStyle(color: AppColorScheme.red),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {

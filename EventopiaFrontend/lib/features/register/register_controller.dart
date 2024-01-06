@@ -1,6 +1,10 @@
 import 'package:awp/features/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:awp/core/constants/connection.dart';
+import 'package:awp/core/models/user_model.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
 
 class RegisterController extends GetxController {
   late final GlobalKey<FormState> formKey;
@@ -22,7 +26,26 @@ class RegisterController extends GetxController {
     super.onInit();
   }
 
-  Future register() async {
-    Get.offAll(HomePage());
+  void register() async {
+    final user = UserModel(
+      email: emailController.text,
+      password: passwordController.text,
+      type: bool.tryParse(typeController.text) ?? false,
+    );
+
+    final dio = Dio();
+    try {
+      final response = await dio.post('${Connection.baseUrl}/User/Create',
+          data: jsonEncode(user));
+      Get.offAll(HomePage());
+    } catch (e) {}
+
+    clearForm();
+  }
+
+  void clearForm() {
+    emailController.clear();
+    passwordController.clear();
+    typeController.clear();
   }
 }

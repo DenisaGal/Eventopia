@@ -1,4 +1,5 @@
 import 'package:awp/features/home/home_page.dart';
+import 'package:awp/core/constants/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:awp/core/models/user_model.dart';
@@ -34,7 +35,7 @@ class LoginController extends GetxController {
 
     final dio = Dio();
     try {
-      final response = await dio.post('http://localhost:46772/User/LoginUser',
+      final response = await dio.post('${Connection.baseUrl}/User/LoginUser',
           data: jsonEncode(user));
           Get.offAll(HomePage());
     } catch (e) {}
@@ -47,5 +48,4 @@ class LoginController extends GetxController {
     passwordController.clear();
     typeController.clear();
   }
-    //Get.offAll(HomePage());
 }
