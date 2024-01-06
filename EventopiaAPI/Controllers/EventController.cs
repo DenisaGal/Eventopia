@@ -21,7 +21,21 @@ namespace EventopiaAPI.Controllers
         [HttpGet(Name = "GetEvents")]
         public async Task<IActionResult> GetEvents()
         {
-            return _context.Events != null ? Ok(await _context.Events.ToListAsync()) : Problem("Entity set 'EventopiaDBContext.Events'  is null.");
+            if (_context.Events == null)
+                return Problem("Entity set 'EventopiaDBContext.Events'  is null.");
+
+            var events = await _context.Events.Include(e => e.Categories).ToListAsync();
+
+            return Ok(events.Select(e => new EventDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                Cost = e.Cost,
+                Location = e.Location,
+                Date = e.Date,
+                Categories = e.Categories.Select(c => c.Id).ToList(),
+            }).ToList());
         }
 
         [HttpPost]

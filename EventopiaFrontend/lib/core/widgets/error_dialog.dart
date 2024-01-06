@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 
 class ErrorDialog {
   static Future show(String errorMessage) {
-    bool unauthorizedError = errorMessage.trim() == 'unauthorized_exception'.tr;
-
     return Get.dialog(
       AlertDialog(
         title: const Text(

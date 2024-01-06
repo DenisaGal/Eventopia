@@ -27,7 +27,8 @@ class EventModel {
       cost: json['cost'],
       location: json['location'],
       date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
-      categories: json['categories'],
+      categories:
+          (json['categories'] as List).map((r) => r.toString()).toList(),
     );
   }
 
