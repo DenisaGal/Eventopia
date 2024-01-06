@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventopiaAPI.Migrations
 {
     [DbContext(typeof(EventopiaDBContext))]
-    [Migration("20240105211033_initial-tables-constraits")]
-    partial class initialtablesconstraits
+    [Migration("20240106112718_UserType")]
+    partial class UserType
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -119,14 +119,14 @@ namespace EventopiaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Type")
+                    b.Property<bool>("IsOrganizer")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

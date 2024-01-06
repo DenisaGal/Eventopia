@@ -115,16 +115,15 @@ class HomePage extends StatelessWidget {
                                           child: Obx(
                                             () => IconButton(
                                               icon: Icon(
-                                                  controller.isSelected.value
+                                                  controller.userHasEvent(
+                                                          event.id)
                                                       ? Icons.star_rounded
                                                       : Icons
                                                           .star_border_rounded,
                                                   color: AppColorScheme.yellow,
                                                   size: 28),
                                               onPressed: () {
-                                                controller.isSelected.value =
-                                                    !controller
-                                                        .isSelected.value;
+                                                //TODO add user event
                                               },
                                               splashColor: Colors.transparent,
                                               highlightColor:
