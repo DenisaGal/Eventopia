@@ -122,8 +122,9 @@ class HomePage extends StatelessWidget {
                                                           .star_border_rounded,
                                                   color: AppColorScheme.yellow,
                                                   size: 28),
-                                              onPressed: () {
-                                                //TODO add user event
+                                              onPressed: () async {
+                                                await controller
+                                                    .editUserEvent(event.id);
                                               },
                                               splashColor: Colors.transparent,
                                               highlightColor:

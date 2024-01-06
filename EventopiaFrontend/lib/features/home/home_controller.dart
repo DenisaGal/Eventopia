@@ -11,12 +11,13 @@ class HomeController extends GetxController {
   late RxList<CategoryModel> categories = <CategoryModel>[].obs;
   RxBool isSelected = false.obs;
   late Rxn<UserDetailsModel> user = Rxn<UserDetailsModel>();
+  late String userId;
 
   @override
   void onInit() async {
     dio = Dio();
 
-    final userId = Get.arguments;
+    userId = Get.arguments;
     await _loadUser(userId);
 
     await _loadEvents();
@@ -27,7 +28,7 @@ class HomeController extends GetxController {
 
   Future<void> _loadEvents() async {
     try {
-      final response = await dio.get('${Connection.baseUrl}/events');
+      final response = await dio.get('${Connection.baseUrl}/Event/GetEvents');
       events.clear();
       List<EventModel> dbEvents = (response.data as List)
           .map((item) => EventModel.fromJson(item))
@@ -40,7 +41,8 @@ class HomeController extends GetxController {
 
   Future<void> _loadCategories() async {
     try {
-      final response = await dio.get('${Connection.baseUrl}/categories');
+      final response =
+          await dio.get('${Connection.baseUrl}/Category/GetCategories');
       categories.clear();
       List<CategoryModel> dbCategories = (response.data as List)
           .map((item) => CategoryModel.fromJson(item))
@@ -63,5 +65,15 @@ class HomeController extends GetxController {
 
   bool userHasEvent(String? eventId) {
     return user.value?.events.map((e) => e.id).contains(eventId) ?? false;
+  }
+
+  Future<void> editUserEvent(String? eventId) async {
+    try {
+      final response = await dio.post(
+          '${Connection.baseUrl}/Event/EditUserEvents?userId=$userId&eventId=$eventId');
+      await _loadUser(userId);
+    } catch (e) {
+      final ex = e; //TODO show popup
+    }
   }
 }

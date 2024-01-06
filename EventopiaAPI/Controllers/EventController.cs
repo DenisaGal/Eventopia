@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EventopiaAPI.Controllers
 {
     [ApiController]
-    [Route("events")]
+    [Route("[controller]/[action]")]
     public class EventController : Controller
     {
         private readonly EventopiaDBContext _context;
@@ -40,6 +40,34 @@ namespace EventopiaAPI.Controllers
                 await _context.SaveChangesAsync();
             }
             return Ok(newEvent);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUserEvents(Guid userId, Guid eventId)
+        {
+            if (_context.Users == null || _context.Events == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.Include(u => u.Events).FirstOrDefaultAsync(m => m.Id == userId);
+            var userEvent = await _context.Events.FirstOrDefaultAsync(m => m.Id == eventId);
+            if (user == null || userEvent == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Events.Select(e => e.Id).ToList().Contains(eventId)) {
+                user.Events.Remove(userEvent);
+            }
+            else
+            {
+                user.Events.Add(userEvent);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
