@@ -51,19 +51,20 @@ class AddEventController extends GetxController {
     final dio = Dio();
     //String fileName = select.path.split('/').last;
     FormData formData = FormData.fromMap({
-      "event": jsonEncode(event),
       "file":
       MultipartFile.fromBytes(selectedFile.value as List<int>)
-      //fromFile(file.path, filename:fileName),
     });
 
 
     try {
-      final response = await dio.post('${Connection.baseUrl}/events',
-          data: formData);
-      // if (response.statusCode == 200){
-      //   final image_response = await dio.post('${Connection.baseUrl}/events')
-      // }
+      final response = await dio.post('${Connection.baseUrl}/Event/Create',
+          data: jsonEncode(event));
+      if (response.statusCode == 200){
+        var jsonResponse = jsonDecode(response.data);
+        var id = jsonResponse['id'];
+        final image_response = await dio.post('${Connection.baseUrl}/Event/AddImage/$id',
+            data: formData);
+      }
     } catch (e) {}
 
     clearForm();
