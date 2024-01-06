@@ -1,4 +1,4 @@
-class EventModel {
+ class EventModel {
   final String? id;
   final String name;
   final String description;

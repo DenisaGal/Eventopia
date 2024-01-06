@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/event_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 
@@ -19,6 +20,9 @@ class AddEventController extends GetxController {
   late final TextEditingController locationController;
   late final TextEditingController dateController;
   late DateTime selectedDate;
+  late Rxn<Uint8List> selectedFile =  Rxn<Uint8List>();
+  late final TextEditingController templateUploadController;
+  late PlatformFile file;
 
   @override
   void onInit() async {
@@ -44,18 +48,26 @@ class AddEventController extends GetxController {
       location: locationController.text,
       date: selectedDate,
     );
-
     final dio = Dio();
+    //String fileName = select.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "event": jsonEncode(event),
+      "file":
+      MultipartFile.fromBytes(selectedFile.value as List<int>)
+      //fromFile(file.path, filename:fileName),
+    });
+
+
     try {
       final response = await dio.post('${Connection.baseUrl}/events',
-          data: jsonEncode(event));
+          data: formData);
+      // if (response.statusCode == 200){
+      //   final image_response = await dio.post('${Connection.baseUrl}/events')
+      // }
     } catch (e) {}
 
     clearForm();
   }
-
-  late Rxn<Uint8List> selectedFile =  Rxn<Uint8List>();
-  late final TextEditingController templateUploadController;
 
   Future<void> selectFile() async {
     try {
@@ -67,7 +79,9 @@ class AddEventController extends GetxController {
         selectedFile.value = result.files.first.bytes;
         templateUploadController.text = result.files.first.name;
       }
+
     } catch (e) {
+      final ex = e; //TODO show popup
     }
   }
 
@@ -77,5 +91,6 @@ class AddEventController extends GetxController {
     taxController.clear();
     locationController.clear();
     dateController.clear();
+    templateUploadController.clear();
   }
 }
