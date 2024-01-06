@@ -1,6 +1,7 @@
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/event_model.dart';
+import 'package:awp/core/models/user_details_model.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
@@ -9,10 +10,14 @@ class HomeController extends GetxController {
   late RxList<EventModel> events = <EventModel>[].obs;
   late RxList<CategoryModel> categories = <CategoryModel>[].obs;
   RxBool isSelected = false.obs;
+  late Rxn<UserDetailsModel> user = Rxn<UserDetailsModel>();
 
   @override
   void onInit() async {
     dio = Dio();
+
+    final userId = Get.arguments;
+    await _loadUser(userId);
 
     await _loadEvents();
     await _loadCategories();
@@ -44,5 +49,19 @@ class HomeController extends GetxController {
     } catch (e) {
       final ex = e; //TODO show popup
     }
+  }
+
+  _loadUser(String userId) async {
+    try {
+      final response =
+          await dio.get('${Connection.baseUrl}/User/GetUserById/?id=$userId');
+      user.value = UserDetailsModel.fromJson(response.data);
+    } catch (e) {
+      final ex = e; //TODO show popup
+    }
+  }
+
+  bool userHasEvent(String? eventId) {
+    return user.value?.events.map((e) => e.id).contains(eventId) ?? false;
   }
 }

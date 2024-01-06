@@ -31,13 +31,24 @@ namespace EventopiaAPI.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _context.Users.Include(u => u.Events).FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            return Ok(user);
+            var userDto = new UserDetailsDto
+            {
+                Email = user.EmailAddress,
+                IsOrganizer = user.IsOrganizer,
+                Events = user.Events.Select(e => new LookupDto
+                {
+                    Id = e.Id,
+                    Details = e.Name
+                }).ToList()
+            };
+
+            return Ok(userDto);
         }
 
         [HttpGet(Name = "GetUserByEmail")]
@@ -71,7 +82,7 @@ namespace EventopiaAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(user.Type);
+            return Ok(user.IsOrganizer);
         }
 
         [HttpGet(Name = "GetUserTypeByEmail")]
@@ -88,7 +99,7 @@ namespace EventopiaAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(user.Type);
+            return Ok(user.IsOrganizer);
         }
 
         //Register
@@ -102,7 +113,7 @@ namespace EventopiaAPI.Controllers
                     Id = Guid.NewGuid(),
                     EmailAddress = newUser.Email,
                     Password = BCrypt.Net.BCrypt.EnhancedHashPassword(newUser.Password, 13),
-                    Type = newUser.Type,
+                    IsOrganizer = newUser.IsOrganizer,
                 });
                 await _context.SaveChangesAsync();
             }
@@ -124,12 +135,12 @@ namespace EventopiaAPI.Controllers
                 return NotFound();
             }
 
-            if (!BCrypt.Net.BCrypt.EnhancedVerify(newUser.Password, user.Password))
+            if (newUser.Password != user.Password) /*(!BCrypt.Net.BCrypt.EnhancedVerify(newUser.Password, user.Password))*/
             {
                 return BadRequest();
             }
 
-            return Ok();
+            return Ok(user.Id);
         }
     }
 }

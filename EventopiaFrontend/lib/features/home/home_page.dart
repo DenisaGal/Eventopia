@@ -3,6 +3,7 @@ import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
 import 'package:awp/features/event/add_event_page.dart';
 import 'package:awp/features/home/home_controller.dart';
+import 'package:awp/features/user_events/user_events_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,9 +17,16 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const HeaderBar(
-            title: "Home",
+          HeaderBar(
+            title: "Eventopia",
             icon: Icons.home,
+            onHomePressed: () {
+              Get.offAll(HomePage());
+            },
+            secondPage: "My Events",
+            onSecondPressed: () {
+              Get.offAll(UserEventsPage());
+            },
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -32,7 +40,6 @@ class HomePage extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: controller.categories.length,
-                      //shrinkWrap: true,
                       itemBuilder: (BuildContext context, int index) {
                         final category = controller.categories[index];
 
@@ -108,16 +115,15 @@ class HomePage extends StatelessWidget {
                                           child: Obx(
                                             () => IconButton(
                                               icon: Icon(
-                                                  controller.isSelected.value
+                                                  controller.userHasEvent(
+                                                          event.id)
                                                       ? Icons.star_rounded
                                                       : Icons
                                                           .star_border_rounded,
                                                   color: AppColorScheme.yellow,
                                                   size: 28),
                                               onPressed: () {
-                                                controller.isSelected.value =
-                                                    !controller
-                                                        .isSelected.value;
+                                                //TODO add user event
                                               },
                                               splashColor: Colors.transparent,
                                               highlightColor:

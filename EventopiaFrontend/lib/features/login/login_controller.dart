@@ -1,10 +1,12 @@
+import 'dart:convert';
+
+import 'package:awp/core/constants/connection.dart';
+import 'package:awp/core/models/user_model.dart';
 import 'package:awp/features/home/home_page.dart';
 import 'package:awp/core/constants/connection.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:awp/core/models/user_model.dart';
-import 'package:dio/dio.dart';
-import 'dart:convert';
 
 class LoginController extends GetxController {
   late final GlobalKey<FormState> formKey;
@@ -30,17 +32,17 @@ class LoginController extends GetxController {
     final user = UserModel(
       email: emailController.text,
       password: passwordController.text,
-      type: bool.tryParse(typeController.text) ?? false,
+      isOrganizer: /*bool.tryParse(typeController.text) ?? */ false,
     );
 
     final dio = Dio();
     try {
       final response = await dio.post('${Connection.baseUrl}/User/LoginUser',
           data: jsonEncode(user));
-          Get.offAll(HomePage());
-    } catch (e) {}
 
-    clearForm();
+      clearForm();
+      Get.to(() => HomePage(), arguments: response.data);
+    } catch (e) {}
   }
 
   void clearForm() {
