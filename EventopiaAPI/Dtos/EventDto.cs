@@ -11,5 +11,7 @@
         public string Location { get; set; } = string.Empty;
 
         public DateTime Date { get; set; }
+
+        public IList<Guid> Categories { get; set; } = null!;
     }
 }

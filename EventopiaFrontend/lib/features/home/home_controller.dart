@@ -64,10 +64,6 @@ class HomeController extends GetxController {
     }
   }
 
-  bool userHasEvent(String? eventId) {
-    return user.value?.events.map((e) => e.id).contains(eventId) ?? false;
-  }
-
   Future<void> editUserEvent(String? eventId) async {
     try {
       final response = await dio.post(
@@ -76,5 +72,9 @@ class HomeController extends GetxController {
     } catch (_) {
       await ErrorDialog.show("Failed to edit user events.");
     }
+  }
+
+  bool userHasEvent(String? eventId) {
+    return user.value?.events.map((e) => e.id).contains(eventId) ?? false;
   }
 }

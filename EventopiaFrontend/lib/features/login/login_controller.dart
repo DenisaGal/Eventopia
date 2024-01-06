@@ -52,5 +52,4 @@ class LoginController extends GetxController {
     passwordController.clear();
     typeController.clear();
   }
-  //Get.offAll(HomePage());
 }

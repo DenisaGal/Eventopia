@@ -1,7 +1,9 @@
 ﻿using Eurofins.Crescendo.Web.Application.Users.Shared;
 using EventopiaAPI.DB;
+using EventopiaAPI.DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace EventopiaAPI.Controllers
 {
@@ -27,6 +29,17 @@ namespace EventopiaAPI.Controllers
         {
             if (ModelState.IsValid)
             {
+                var newCategories = new List<Category>();
+                foreach (var categoryId in newEvent.Categories)
+                {
+                    var category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == categoryId);
+                    if (category == null)
+                    {
+                        return NotFound();
+                    }
+                    newCategories.Add(category);
+                }
+
                 _context.Events.Add(new Event
                 {
                     Id = Guid.NewGuid(),
@@ -36,7 +49,9 @@ namespace EventopiaAPI.Controllers
                     Location = newEvent.Location,
                     Capacity = 0,
                     Date = DateTime.SpecifyKind(newEvent.Date, DateTimeKind.Utc),
+                    Categories = newCategories
                 });
+
                 await _context.SaveChangesAsync();
             }
             return Ok(newEvent);
@@ -57,7 +72,8 @@ namespace EventopiaAPI.Controllers
                 return NotFound();
             }
 
-            if (user.Events.Select(e => e.Id).ToList().Contains(eventId)) {
+            if (user.Events.Select(e => e.Id).ToList().Contains(eventId))
+            {
                 user.Events.Remove(userEvent);
             }
             else

@@ -5,16 +5,18 @@ class EventModel {
   final int cost;
   final String location;
   final DateTime date;
+  List<String> categories;
 
   //String imageUrl;
 
-  const EventModel({
+  EventModel({
     this.id,
     required this.description,
     required this.name,
     required this.cost,
     required this.location,
     required this.date,
+    required this.categories,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class EventModel {
       cost: json['cost'],
       location: json['location'],
       date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      categories: json['categories'],
     );
   }
 
@@ -34,6 +37,7 @@ class EventModel {
         'name': name,
         'cost': cost,
         'location': location,
+        'categories': categories,
         'date': date.toIso8601String(),
       };
 }
