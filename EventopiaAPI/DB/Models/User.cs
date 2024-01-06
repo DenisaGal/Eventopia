@@ -1,15 +1,20 @@
 ﻿using EventopiaAPI.DB.Models;
+using Npgsql.Logging;
 
 namespace EventopiaAPI.DB
 {
     public class User
     {
         public Guid Id { get; set; }
-        public string EmailAddress { get; set; }
-        public string Password { get; set; }
-        public bool Type {  get; set; } // 0 = normal, 1 = orgenizer
 
-        public ICollection<Event> Events { get; set; }
-        public ICollection<UserPreference> UserPreferences { get; set; }
+        public string EmailAddress { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
+        public bool IsOrganizer {  get; set; }
+
+        public ICollection<Event> Events { get; set; } = null!;
+
+        public ICollection<UserPreference> UserPreferences { get; set; } = null!;
     }
 }

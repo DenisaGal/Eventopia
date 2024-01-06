@@ -30,9 +30,9 @@ namespace EventopiaAPI.DB
                 .Property(u => u.Password)
                 .IsRequired();
             modelBuilder.Entity<User>()
-                .Property(u => u.Type)
+                .Property(u => u.IsOrganizer)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(false);
 
             //Event constraints
             modelBuilder.Entity<Event>()
