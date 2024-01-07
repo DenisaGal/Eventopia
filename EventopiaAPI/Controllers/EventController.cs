@@ -61,7 +61,7 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddImage(Guid? Id, IFormFile file)
+        public async Task<IActionResult> AddImage(Guid? Id, [FromBody] IFormFile file)
         {
             if (Id == null || _context.Events == null)
             {

@@ -49,12 +49,10 @@ class AddEventController extends GetxController {
       date: selectedDate,
     );
     final dio = Dio();
-    //String fileName = select.path.split('/').last;
-    FormData formData = FormData.fromMap({
-      "file":
-      MultipartFile.fromBytes(selectedFile.value as List<int>)
-    });
-
+    var multipartBytes = MultipartFile.fromBytes(selectedFile.value as List<int>, filename: templateUploadController.text,);
+    //FormData formData = FormData.fromMap({
+      //"file":
+      //MultipartFile.fromBytes( as List<int>, filename: templateUploadController.text)});
 
     try {
       final response = await dio.post('${Connection.baseUrl}/Event/Create',
@@ -63,8 +61,10 @@ class AddEventController extends GetxController {
       if (code == 200){
         var event = EventModel.fromJson(response.data);
         var id = event.id;
-        final image_response = await dio.post('${Connection.baseUrl}/Event/AddImage?Id=$id',
-            data: formData);
+        //final image_response = await dio.post('${Connection.baseUrl}/Event/AddImage?Id=$id',
+            //data: formData);
+        var image_response = await dio.post('${Connection.baseUrl}/Event/AddImage?Id=$id',
+          data: FormData.fromMap({"file": multipartBytes,}),);
         print(image_response);
       }
     } catch (e) {}
