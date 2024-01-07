@@ -106,18 +106,21 @@ namespace EventopiaAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserDto newUser)
         {
+            var newId = Guid.NewGuid();
+
             if (ModelState.IsValid)
             {
                 _context.Users.Add(new User
                 {
-                    Id = Guid.NewGuid(),
+                    Id = newId,
                     EmailAddress = newUser.Email,
                     Password = BCrypt.Net.BCrypt.EnhancedHashPassword(newUser.Password, 13),
                     IsOrganizer = newUser.IsOrganizer,
                 });
                 await _context.SaveChangesAsync();
             }
-            return Ok(newUser);
+
+            return Ok(newId);
         }
 
         //Login
@@ -135,7 +138,7 @@ namespace EventopiaAPI.Controllers
                 return NotFound();
             }
 
-            if (newUser.Password != user.Password) /*(!BCrypt.Net.BCrypt.EnhancedVerify(newUser.Password, user.Password))*/
+            if (!BCrypt.Net.BCrypt.EnhancedVerify(newUser.Password, user.Password))
             {
                 return BadRequest();
             }

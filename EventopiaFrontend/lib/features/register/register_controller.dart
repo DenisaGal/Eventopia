@@ -1,10 +1,12 @@
-import 'package:awp/features/home/home_page.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'dart:convert';
+
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/user_model.dart';
+import 'package:awp/core/widgets/error_dialog.dart';
+import 'package:awp/features/home/home_page.dart';
 import 'package:dio/dio.dart';
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
   late final GlobalKey<FormState> formKey;
@@ -37,8 +39,12 @@ class RegisterController extends GetxController {
     try {
       final response = await dio.post('${Connection.baseUrl}/User/Create',
           data: jsonEncode(user));
-      Get.offAll(HomePage());
-    } catch (e) {}
+
+      clearForm();
+      Get.to(() => HomePage(), arguments: response.data);
+    } catch (_) {
+      await ErrorDialog.show("Failed to register.");
+    }
 
     clearForm();
   }

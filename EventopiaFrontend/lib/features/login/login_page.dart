@@ -2,6 +2,7 @@ import 'package:awp/core/constants/paths.dart';
 import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/validators/input_validator.dart';
 import 'package:awp/features/login/login_controller.dart';
+import 'package:awp/features/register/register_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -156,7 +157,7 @@ class LoginPage extends StatelessWidget {
                               ..onTap = () {
                                 controller.emailController.clear();
                                 controller.passwordController.clear();
-                                //Get.offAll(RegisterPage());
+                                Get.offAll(RegisterPage());
                               },
                           ),
                         ),
