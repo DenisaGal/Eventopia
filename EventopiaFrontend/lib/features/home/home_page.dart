@@ -38,28 +38,73 @@ class HomePage extends StatelessWidget {
                 children: [
                   SizedBox(
                     height: 50,
-                    child: Obx(
-                      () => ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount: controller.categories.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final category = controller.categories[index];
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Obx(
+                                () => ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.categories.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final category = controller.categories[index];
 
-                          return Row(
-                            children: [
-                              Text(
-                                category.name,
-                                style: const TextStyle(
-                                    color: AppColorScheme.orange),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              )
-                            ],
-                          );
-                        },
-                      ),
+                                return Row(
+                                  children: [
+                                    Obx(
+                                          () => InkWell(
+                                        onTap: () {
+                                          controller.editSelectedCategories(
+                                              category.id ?? '');
+                                          controller.filter();
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              border: !controller
+                                                  .selectedCategories
+                                                  .contains(category.id)
+                                                  ? Border.all(
+                                                  color: AppColorScheme
+                                                      .orange)
+                                                  : null,
+                                              borderRadius:
+                                              BorderRadius.circular(8),
+                                              color: !controller
+                                                  .selectedCategories
+                                                  .contains(category.id)
+                                                  ? AppColorScheme.white
+                                                  : AppColorScheme.orange),
+                                          child: Padding(
+                                            padding:
+                                            const EdgeInsets.symmetric(
+                                              vertical: 4,
+                                              horizontal: 8,
+                                            ),
+                                            child: Text(
+                                              category.name,
+                                              style: TextStyle(
+                                                  color: !controller
+                                                      .selectedCategories
+                                                      .contains(
+                                                      category.id)
+                                                      ? AppColorScheme.orange
+                                                      : AppColorScheme.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(
