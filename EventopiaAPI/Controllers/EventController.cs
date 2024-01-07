@@ -1,11 +1,9 @@
-﻿using Eurofins.Crescendo.Web.Application.Users.Shared;
+﻿﻿using Eurofins.Crescendo.Web.Application.Users.Shared;
 using EventopiaAPI.DB;
 using EventopiaAPI.DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
-using System.Linq;
-using System.Runtime.Intrinsics.Arm;
 
 namespace EventopiaAPI.Controllers
 {
@@ -41,7 +39,18 @@ namespace EventopiaAPI.Controllers
                     Id = c.Id,
                     Details = c.Name
                 }).ToList(),
-            }).ToList());
+            }).ToList()) ;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetImage(Guid eventId)
+        {
+            if (_context.Events == null)
+                return Problem("Entity set 'EventopiaDBContext.Events'  is null.");
+
+            var dbEvent = await _context.Events.FirstOrDefaultAsync(m => m.Id == eventId);
+
+            return new FileContentResult(dbEvent.Image, "image/png");
         }
 
         [HttpGet(Name = "GetEventsByCategory")]
@@ -68,10 +77,12 @@ namespace EventopiaAPI.Controllers
             }).ToList());
 
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto newEvent)
         {
+            var newId = Guid.NewGuid();
+
             if (ModelState.IsValid)
             {
                 var newCategories = new List<Category>();
@@ -87,7 +98,7 @@ namespace EventopiaAPI.Controllers
 
                 _context.Events.Add(new Event
                 {
-                    Id = Guid.NewGuid(),
+                    Id = newId,
                     Name = newEvent.Name,
                     Description = newEvent.Description,
                     Cost = newEvent.Cost,
@@ -99,7 +110,16 @@ namespace EventopiaAPI.Controllers
 
                 await _context.SaveChangesAsync();
             }
-            return Ok(newEvent);
+            return Ok(new CreateEventDto
+            {
+                Id = newId,
+                Name = newEvent.Name,
+                Description = newEvent.Description,
+                Cost = newEvent.Cost,
+                Location = newEvent.Location,
+                Date = DateTime.SpecifyKind(newEvent.Date, DateTimeKind.Utc),
+                Categories = new List<Guid>()
+            });
         }
 
         [HttpPost]
@@ -153,6 +173,34 @@ namespace EventopiaAPI.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPatch("/{Id}")]
+        public async Task<IActionResult> AddImage([FromRoute] Guid Id, IFormFile file)
+        {
+            var dbEvent = await _context.Events.FirstOrDefaultAsync(e => e.Id == Id);
+            if (dbEvent == null)
+            {
+                return NotFound();
+            }
+
+            if (file == null)
+            {
+                return BadRequest();
+            }
+
+            var ms = new MemoryStream();
+            file.CopyTo(ms);
+            var fileBytes = ms.ToArray();
+
+            if (ModelState.IsValid)
+            {
+                dbEvent.Image = fileBytes;
+                _context.Events.Update(dbEvent);
+                await _context.SaveChangesAsync();
+            }
 
             return Ok();
         }

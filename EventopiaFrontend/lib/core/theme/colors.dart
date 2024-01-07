@@ -10,6 +10,7 @@ class AppColorScheme {
   static const Color blue = Color(0xFF184D72);
   static const Color darkBlue = Color(0xFF0E3B62);
   static const Color orange = Color(0xFFFF6516);
+  static const Color darkOrange = Color(0xFFC84707);
   static const Color yellow = Color(0xFFFCC232);
 
   static const Color secondaryGreen2 = Color(0xFF697664);

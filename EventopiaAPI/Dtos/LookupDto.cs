@@ -5,5 +5,7 @@
         public Guid Id { get; set; }
 
         public string Details { get; set; } = string.Empty;
+
+        public string? Extra { get; set; }
     }
 }
