@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
               },
               secondPage: "Recommended",
               onSecondPressed: () {
-                Get.offAll(UserEventsPage());
+                Get.to(() => UserEventsPage(), arguments: controller.userId);
               },
             ),
             Padding(
@@ -82,7 +82,6 @@ class HomePage extends StatelessWidget {
                       thumbVisibility: true,
                       child: SizedBox(
                         height: 620,
-                        //width: 420,
                         child: GridView.builder(
                           controller: _scrollController,
                           scrollDirection: Axis.vertical,
@@ -97,6 +96,13 @@ class HomePage extends StatelessWidget {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(2, 2),
+                                          blurRadius: 6)
+                                    ],
+                                    color: AppColorScheme.white,
                                     border: Border.all(
                                         color: AppColorScheme.darkRed),
                                     borderRadius: BorderRadius.circular(10),
