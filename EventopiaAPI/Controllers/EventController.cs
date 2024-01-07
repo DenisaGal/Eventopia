@@ -4,6 +4,8 @@ using EventopiaAPI.DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
+using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 
 namespace EventopiaAPI.Controllers
 {
@@ -40,6 +42,31 @@ namespace EventopiaAPI.Controllers
                     Details = c.Name
                 }).ToList(),
             }).ToList());
+        }
+
+        [HttpGet(Name = "GetEventsByCategory")]
+        public async Task<IActionResult> GetEventsByCategory([FromQuery] IList<Guid> categoryIds)
+        {
+            if (_context.Events == null)
+                return Problem("Entity set 'EventopiaDBContext.Events'  is null.");
+
+            var events = await _context.Events.Where(e => e.Categories.Any(c => categoryIds.Contains(c.Id))).Include(e => e.Categories).ToListAsync();
+
+            return Ok(events.Select(e => new EventDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                Cost = e.Cost,
+                Location = e.Location,
+                Date = e.Date,
+                Categories = e.Categories.Select(c => new LookupDto
+                {
+                    Id = c.Id,
+                    Details = c.Name
+                }).ToList(),
+            }).ToList());
+
         }
 
         [HttpPost]
