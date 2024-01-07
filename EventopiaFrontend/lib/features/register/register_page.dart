@@ -28,7 +28,7 @@ class RegisterPage extends StatelessWidget {
                 Flexible(
                   child: Image.asset(
                     Paths.logo,
-                    height: 500,
+                    height: 450,
                   ),
                 ),
                 const Text(
@@ -128,7 +128,24 @@ class RegisterPage extends StatelessWidget {
                             LengthLimitingTextInputFormatter(255),
                           ],
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Obx(
+                              () => Checkbox(
+                                value: controller.isOrganizer.value,
+                                onChanged: (value) {
+                                  controller.isOrganizer.value = value!;
+                                },
+                              ),
+                            ),
+                            const Text(
+                              "Do you want to be an event organizer?",
+                              style: TextStyle(color: AppColorScheme.darkBlue),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
                             if (controller.formKey.currentState!.validate()) {
@@ -143,24 +160,35 @@ class RegisterPage extends StatelessWidget {
                                 horizontal: 20,
                                 vertical: 15,
                               ),
-                              backgroundColor: AppColorScheme.darkBlue),
+                              backgroundColor: AppColorScheme.darkRed),
                           child: const Text(
                             'Register',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
-                        const SizedBox(height: 15),
-                        RichText(
-                          text: TextSpan(
-                            text: 'Login',
-                            style: const TextStyle(color: AppColorScheme.red),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                controller.emailController.clear();
-                                controller.passwordController.clear();
-                                Get.offAll(LoginPage());
-                              },
-                          ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Already have an account?",
+                              style: TextStyle(color: AppColorScheme.darkBlue),
+                            ),
+                            const SizedBox(width: 5),
+                            RichText(
+                              text: TextSpan(
+                                text: 'Login',
+                                style:
+                                    const TextStyle(color: AppColorScheme.red),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    controller.emailController.clear();
+                                    controller.passwordController.clear();
+                                    Get.offAll(LoginPage());
+                                  },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -261,13 +261,15 @@ class HomePage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Visibility(
-                  visible: true, //TODO if user is admin
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Get.offAll(AddEventPage());
-                    },
-                    child: const Text("Add event"),
+                Obx(
+                  () => Visibility(
+                    visible: controller.user.value?.isOrganizer ?? false,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.offAll(AddEventPage());
+                      },
+                      child: const Text("Add event"),
+                    ),
                   ),
                 )
               ],

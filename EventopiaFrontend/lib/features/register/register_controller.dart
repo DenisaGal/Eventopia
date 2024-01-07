@@ -15,6 +15,7 @@ class RegisterController extends GetxController {
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
   late final TextEditingController isOrganizerController;
+  RxBool isOrganizer = false.obs;
 
   @override
   void onInit() {
@@ -32,7 +33,7 @@ class RegisterController extends GetxController {
     final user = UserModel(
       email: emailController.text,
       password: passwordController.text,
-      isOrganizer: /*bool.tryParse(typeController.text) ?? */ false,
+      isOrganizer: isOrganizer.value,
     );
 
     final dio = Dio();
