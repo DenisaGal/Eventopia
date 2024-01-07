@@ -59,11 +59,13 @@ class AddEventController extends GetxController {
     try {
       final response = await dio.post('${Connection.baseUrl}/Event/Create',
           data: jsonEncode(event));
-      if (response.statusCode == 200){
-        var jsonResponse = jsonDecode(response.data);
-        var id = jsonResponse['id'];
-        final image_response = await dio.post('${Connection.baseUrl}/Event/AddImage/$id',
+      int code = response.statusCode as int;
+      if (code == 200){
+        var event = EventModel.fromJson(response.data);
+        var id = event.id;
+        final image_response = await dio.post('${Connection.baseUrl}/Event/AddImage?Id=$id',
             data: formData);
+        print(image_response);
       }
     } catch (e) {}
 

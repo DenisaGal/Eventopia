@@ -61,34 +61,36 @@ namespace EventopiaAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddImage(Guid Id, [FromBody] Event newEvent)
+        public async Task<IActionResult> AddImage(Guid? Id, IFormFile file)
         {
-            if (Id != newEvent.Id)
+            if (Id == null || _context.Events == null)
             {
                 return NotFound();
             }
 
+            var @event = await _context.Events.FirstOrDefaultAsync(m => m.Id == Id);
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            if (file == null)
+            {
+               return BadRequest();
+            }
+            var ms = new MemoryStream();
+            file.CopyTo(ms);
+            var fileBytes = ms.ToArray();
+            //string s = Convert.ToBase64String(fileBytes);
+
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(newEvent);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EventExists(newEvent.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                @event.Image = fileBytes;
+                _context.Events.Update(@event);
+                await _context.SaveChangesAsync();
             }
-            return Ok(newEvent);
+
+            return Ok();
         }
 
         private bool EventExists(Guid Id)
