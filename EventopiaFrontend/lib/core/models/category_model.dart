@@ -1,9 +1,9 @@
 class CategoryModel {
-  String id;
+  String? id;
   String name;
 
   CategoryModel({
-    required this.id,
+    this.id,
     required this.name,
   });
 
@@ -13,4 +13,9 @@ class CategoryModel {
       name: json['name'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+      };
 }
