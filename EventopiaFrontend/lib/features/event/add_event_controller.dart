@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/create_event_model.dart';
+import 'package:awp/core/models/event_model.dart';
 import 'package:awp/core/widgets/error_dialog.dart';
+import 'package:awp/features/home/home_page.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 
 class AddEventController extends GetxController {
   late final Dio dio;
@@ -21,9 +24,11 @@ class AddEventController extends GetxController {
   late final TextEditingController locationController;
   late final TextEditingController dateController;
   late final TextEditingController categoryController;
+  late final TextEditingController fileController;
   late DateTime selectedDate;
   late RxList<CategoryModel> categories = <CategoryModel>[].obs;
   late RxList<String> selectedCategories = <String>[].obs;
+  Rxn<PlatformFile> selectedFile = Rxn<PlatformFile>();
 
   @override
   void onInit() async {
@@ -38,6 +43,7 @@ class AddEventController extends GetxController {
     locationController = TextEditingController();
     dateController = TextEditingController();
     categoryController = TextEditingController();
+    fileController = TextEditingController();
 
     dio = Dio();
 
@@ -60,7 +66,7 @@ class AddEventController extends GetxController {
     }
   }
 
-  void save() async {
+  Future save() async {
     final event = CreateEventModel(
       name: titleController.text,
       description: descriptionController.text,
@@ -71,13 +77,32 @@ class AddEventController extends GetxController {
     );
 
     try {
-      await dio.post('${Connection.baseUrl}/Event/Create',
+      var eventResponse = await dio.post('${Connection.baseUrl}/Event/Create',
           data: jsonEncode(event));
+
+      var createdEvent = EventModel.fromJson(eventResponse.data);
+
+      try {
+        var multipartBytes = MultipartFile.fromBytes(
+          selectedFile.value!.bytes!.toList(),
+          filename: fileController.text,
+        );
+
+        await dio.patch(
+          '${Connection.baseUrl}/${createdEvent.id}',
+          data: FormData.fromMap({
+            "file": multipartBytes,
+          }),
+        );
+      } catch (e) {
+        await ErrorDialog.show("Failed to add image.");
+      }
+
+      clearForm();
+      Get.off(HomePage());
     } catch (_) {
       await ErrorDialog.show("Failed to create event.");
     }
-
-    clearForm();
   }
 
   void clearForm() {
@@ -88,6 +113,8 @@ class AddEventController extends GetxController {
     dateController.clear();
     categories.clear();
     selectedCategories.clear();
+    selectedFile.value = null;
+    fileController.clear();
   }
 
   void editSelectedCategories(String categoryId) {
@@ -110,6 +137,21 @@ class AddEventController extends GetxController {
       categories.add(CategoryModel.fromJson(response.data));
     } catch (_) {
       await ErrorDialog.show("Failed to create category.");
+    }
+  }
+
+  Future<void> selectFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png'],
+      );
+      if (result != null && result.files.isNotEmpty) {
+        selectedFile.value = result.files.first;
+        fileController.text = result.files.first.name;
+      }
+    } catch (e) {
+      await ErrorDialog.show("Failed to select file.");
     }
   }
 }

@@ -20,6 +20,8 @@ namespace EventopiaAPI.DB
 
         public DateTime Date { get; set; }
 
+        public byte[]? Image { get; set; }
+
         public ICollection<User> Users { get; set; } = null!;
 
         public ICollection<Category> Categories { get; set; } = null!;

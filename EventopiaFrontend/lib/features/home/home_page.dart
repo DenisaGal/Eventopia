@@ -1,4 +1,5 @@
-import 'package:awp/core/constants/paths.dart';
+import 'dart:typed_data';
+
 import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
 import 'package:awp/features/event/add_event_page.dart';
@@ -26,9 +27,9 @@ class HomePage extends StatelessWidget {
               onHomePressed: () {
                 Get.offAll(HomePage());
               },
-              secondPage: "My Events",
+              secondPage: "Recommended",
               onSecondPressed: () {
-                Get.offAll(UserEventsPage());
+                Get.to(() => UserEventsPage(), arguments: controller.userId);
               },
             ),
             Padding(
@@ -81,8 +82,7 @@ class HomePage extends StatelessWidget {
                       thumbVisibility: true,
                       child: SizedBox(
                         height: 620,
-                        width: 420,
-                        child: ListView.builder(
+                        child: GridView.builder(
                           controller: _scrollController,
                           scrollDirection: Axis.vertical,
                           physics: const AlwaysScrollableScrollPhysics(),
@@ -96,6 +96,13 @@ class HomePage extends StatelessWidget {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(2, 2),
+                                          blurRadius: 6)
+                                    ],
+                                    color: AppColorScheme.white,
                                     border: Border.all(
                                         color: AppColorScheme.darkRed),
                                     borderRadius: BorderRadius.circular(10),
@@ -210,12 +217,13 @@ class HomePage extends StatelessWidget {
                                               ],
                                             ),
                                             Flexible(
-                                              child: Image.asset(
-                                                event.name[0] == 'C'
-                                                    ? Paths.concert
-                                                    : Paths.hike,
-                                                height: 100,
-                                              ),
+                                              child: Image.memory(
+                                                  index <
+                                                          controller
+                                                              .images.length
+                                                      ? controller.images[index]
+                                                      : Uint8List(0),
+                                                  height: 100),
                                             ),
                                           ],
                                         ),
@@ -275,6 +283,13 @@ class HomePage extends StatelessWidget {
                               ],
                             );
                           },
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 300, mainAxisExtent: 400,
+                            //childAspectRatio: 3 / 2,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20,
+                          ),
                         ),
                       ),
                     ),
