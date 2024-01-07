@@ -129,5 +129,34 @@ namespace EventopiaAPI.Controllers
 
             return Ok();
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> AddImage(Guid Id, [FromBody] IFormFile file)
+        {
+            var dbEvent = await _context.Events.FirstOrDefaultAsync(e => e.Id == Id);
+            if (dbEvent == null)
+            {
+                return NotFound();
+            }
+
+            if (file == null)
+            {
+                return BadRequest();
+            }
+
+            var ms = new MemoryStream();
+            file.CopyTo(ms);
+            var fileBytes = ms.ToArray();
+            //string s = Convert.ToBase64String(fileBytes);
+
+            if (ModelState.IsValid)
+            {
+                dbEvent.Image = fileBytes;
+                _context.Events.Update(dbEvent);
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
     }
 }

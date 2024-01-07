@@ -155,6 +155,36 @@ class AddEventPage extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
+                    Obx(
+                      () => Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              readOnly: true,
+                              decoration: const InputDecoration(
+                                hintText: 'Image',
+                              ),
+                              controller: controller.templateUploadController,
+                              autovalidateMode:
+                                  controller.selectedFile.value != null
+                                      ? AutovalidateMode.onUserInteraction
+                                      : AutovalidateMode.disabled,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: controller.selectFile,
+                            child: Text('Browse'.tr),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     SizedBox(
                       height: 50,
                       child: Row(

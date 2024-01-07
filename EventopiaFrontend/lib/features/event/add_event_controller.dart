@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/create_event_model.dart';
 import 'package:awp/core/widgets/error_dialog.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,9 +23,11 @@ class AddEventController extends GetxController {
   late final TextEditingController locationController;
   late final TextEditingController dateController;
   late final TextEditingController categoryController;
+  late final TextEditingController templateUploadController;
   late DateTime selectedDate;
   late RxList<CategoryModel> categories = <CategoryModel>[].obs;
   late RxList<String> selectedCategories = <String>[].obs;
+  late Rxn<Uint8List> selectedFile = Rxn<Uint8List>();
 
   @override
   void onInit() async {
@@ -38,6 +42,7 @@ class AddEventController extends GetxController {
     locationController = TextEditingController();
     dateController = TextEditingController();
     categoryController = TextEditingController();
+    templateUploadController = TextEditingController();
 
     dio = Dio();
 
@@ -110,6 +115,21 @@ class AddEventController extends GetxController {
       categories.add(CategoryModel.fromJson(response.data));
     } catch (_) {
       await ErrorDialog.show("Failed to create category.");
+    }
+  }
+
+  Future<void> selectFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png'],
+      );
+      if (result != null && result.files.isNotEmpty) {
+        selectedFile.value = result.files.first.bytes;
+        templateUploadController.text = result.files.first.name;
+      }
+    } catch (e) {
+      await ErrorDialog.show("Failed to select file.");
     }
   }
 }
