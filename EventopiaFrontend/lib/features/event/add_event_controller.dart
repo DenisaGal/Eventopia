@@ -86,6 +86,8 @@ class AddEventController extends GetxController {
     taxController.clear();
     locationController.clear();
     dateController.clear();
+    categories.clear();
+    selectedCategories.clear();
   }
 
   void editSelectedCategories(String categoryId) {

@@ -287,7 +287,7 @@ class HomePage extends StatelessWidget {
                       visible: controller.user.value?.isOrganizer ?? false,
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.offAll(AddEventPage());
+                          Get.to(AddEventPage());
                         },
                         child: const Text("Add event"),
                       ),

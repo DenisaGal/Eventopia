@@ -301,7 +301,7 @@ class AddEventPage extends StatelessWidget {
                           onPressed: () {
                             if (controller.formKey.currentState!.validate()) {
                               controller.save();
-                              Get.offAll(HomePage());
+                              Get.off(HomePage());
                             }
                           },
                           icon: const Icon(Icons.save),
@@ -313,7 +313,7 @@ class AddEventPage extends StatelessWidget {
                         OutlinedButton(
                           onPressed: () {
                             controller.clearForm();
-                            Get.offAll(HomePage());
+                            Get.off(HomePage());
                           },
                           child: const Text("Cancel"),
                         ),

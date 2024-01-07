@@ -36,6 +36,17 @@ namespace EventopiaAPI.Controllers
                     Name = newCategory.Name
                 });
 
+                var users = await _context.Users.ToListAsync();
+                foreach(var user in users)
+                {
+                    _context.UserPreferences.Add(new UserPreference
+                    {
+                        UserId = user.Id,
+                        CategoryId = newId,
+                        Rating = 0
+                    });
+                }
+
                 await _context.SaveChangesAsync();
             }
             return Ok(new CategoryDto 

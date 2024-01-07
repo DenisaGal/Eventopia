@@ -1,5 +1,6 @@
 ﻿using Eurofins.Crescendo.Web.Application.Users.Shared;
 using EventopiaAPI.DB;
+using EventopiaAPI.DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
@@ -117,6 +118,18 @@ namespace EventopiaAPI.Controllers
                     Password = BCrypt.Net.BCrypt.EnhancedHashPassword(newUser.Password, 13),
                     IsOrganizer = newUser.IsOrganizer,
                 });
+
+                var categories = await _context.Categories.ToListAsync();
+                foreach (var category in categories)
+                {
+                    _context.UserPreferences.Add(new UserPreference
+                    {
+                        UserId = newId,
+                        CategoryId = category.Id,
+                        Rating = 0
+                    });
+                }
+
                 await _context.SaveChangesAsync();
             }
 
