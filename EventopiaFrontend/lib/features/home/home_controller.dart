@@ -23,11 +23,9 @@ class HomeController extends GetxController {
     dio = Dio();
 
     userId = Get.arguments;
-
     await _loadUser(userId);
 
     await _loadCategories();
-
     await _loadEvents();
   }
 

@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
               onHomePressed: () {
                 Get.offAll(HomePage());
               },
-              secondPage: "My Events",
+              secondPage: "Recommended",
               onSecondPressed: () {
                 Get.offAll(UserEventsPage());
               },
@@ -82,8 +82,8 @@ class HomePage extends StatelessWidget {
                       thumbVisibility: true,
                       child: SizedBox(
                         height: 620,
-                        width: 420,
-                        child: ListView.builder(
+                        //width: 420,
+                        child: GridView.builder(
                           controller: _scrollController,
                           scrollDirection: Axis.vertical,
                           physics: const AlwaysScrollableScrollPhysics(),
@@ -277,6 +277,13 @@ class HomePage extends StatelessWidget {
                               ],
                             );
                           },
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 300, mainAxisExtent: 400,
+                            //childAspectRatio: 3 / 2,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20,
+                          ),
                         ),
                       ),
                     ),
