@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/category_model.dart';
 import 'package:awp/core/models/event_model.dart';
@@ -13,28 +15,39 @@ class HomeController extends GetxController {
   RxBool isSelected = false.obs;
   late Rxn<UserDetailsModel> user = Rxn<UserDetailsModel>();
   late String userId;
+  late RxList<Uint8List> images = RxList<Uint8List>();
 
   @override
   void onInit() async {
+    super.onInit();
     dio = Dio();
 
     userId = Get.arguments;
+
     await _loadUser(userId);
 
-    await _loadEvents();
     await _loadCategories();
 
-    super.onInit();
+    await _loadEvents();
   }
 
   Future<void> _loadEvents() async {
     try {
       final response = await dio.get('${Connection.baseUrl}/Event/GetEvents');
       events.clear();
+      images.clear();
       List<EventModel> dbEvents = (response.data as List)
           .map((item) => EventModel.fromJson(item))
           .toList();
-      events.addAll(dbEvents);
+
+      for (var event in dbEvents) {
+        events.add(event);
+        final imageResponse = await dio.get(
+          '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
+          options: Options(responseType: ResponseType.bytes),
+        );
+        images.add(Uint8List.fromList(imageResponse.data));
+      }
     } catch (_) {
       await ErrorDialog.show("Failed to load events.");
     }

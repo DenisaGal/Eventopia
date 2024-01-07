@@ -1,4 +1,5 @@
-import 'package:awp/core/constants/paths.dart';
+import 'dart:typed_data';
+
 import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
 import 'package:awp/features/event/add_event_page.dart';
@@ -210,12 +211,13 @@ class HomePage extends StatelessWidget {
                                               ],
                                             ),
                                             Flexible(
-                                              child: Image.asset(
-                                                event.name[0] == 'C'
-                                                    ? Paths.concert
-                                                    : Paths.hike,
-                                                height: 100,
-                                              ),
+                                              child: Image.memory(
+                                                  index <
+                                                          controller
+                                                              .images.length
+                                                      ? controller.images[index]
+                                                      : Uint8List(0),
+                                                  height: 100),
                                             ),
                                           ],
                                         ),

@@ -39,9 +39,20 @@ namespace EventopiaAPI.Controllers
                     Id = c.Id,
                     Details = c.Name
                 }).ToList(),
-            }).ToList());
+            }).ToList()) ;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetImage(Guid eventId)
+        {
+            if (_context.Events == null)
+                return Problem("Entity set 'EventopiaDBContext.Events'  is null.");
+
+            var dbEvent = await _context.Events.FirstOrDefaultAsync(m => m.Id == eventId);
+
+            return new FileContentResult(dbEvent.Image, "image/png");
+        }
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto newEvent)
         {

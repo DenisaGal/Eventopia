@@ -161,6 +161,10 @@ class AddEventPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: TextFormField(
+                              validator: (value) => InputValidator.validate(
+                                value,
+                                'Mandatory input',
+                              ),
                               readOnly: true,
                               decoration: const InputDecoration(
                                 hintText: 'Image',
