@@ -211,7 +211,7 @@ class HomePage extends StatelessWidget {
                                       itemCount: event.categories?.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        final categoryId =
+                                        final category =
                                             event.categories?[index];
 
                                         return Row(
@@ -231,10 +231,7 @@ class HomePage extends StatelessWidget {
                                                   horizontal: 8,
                                                 ),
                                                 child: Text(
-                                                  controller.categories
-                                                      .firstWhere((c) =>
-                                                          c.id == categoryId)
-                                                      .name,
+                                                  category?.details ?? "",
                                                   style: const TextStyle(
                                                       color: AppColorScheme
                                                           .orange),

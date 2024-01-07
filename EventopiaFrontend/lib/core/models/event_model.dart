@@ -1,3 +1,5 @@
+import 'package:awp/core/models/lookup_model.dart';
+
 class EventModel {
   final String? id;
   final String name;
@@ -5,7 +7,7 @@ class EventModel {
   final int cost;
   final String location;
   final DateTime date;
-  List<String>? categories;
+  List<LookupModel>? categories;
 
   //String imageUrl;
 
@@ -21,15 +23,17 @@ class EventModel {
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
-      id: json['id'],
-      description: json['description'],
-      name: json['name'],
-      cost: json['cost'],
-      location: json['location'],
-      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
-      categories:
-          (json['categories'] as List).map((r) => r.toString()).toList(),
-    );
+        id: json['id'],
+        description: json['description'],
+        name: json['name'],
+        cost: json['cost'],
+        location: json['location'],
+        date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+        categories: json['categories'] != null
+            ? (json['categories'] as List)
+                .map<LookupModel>((item) => LookupModel.fromJson(item))
+                .toList()
+            : []);
   }
 
   Map<String, dynamic> toJson() => {
@@ -38,7 +42,7 @@ class EventModel {
         'name': name,
         'cost': cost,
         'location': location,
-        'categories': categories,
+        'categories': categories?.map((c) => c.toJson()).toList(),
         'date': date.toIso8601String(),
       };
 }

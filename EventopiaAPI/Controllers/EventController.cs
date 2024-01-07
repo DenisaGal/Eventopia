@@ -34,12 +34,16 @@ namespace EventopiaAPI.Controllers
                 Cost = e.Cost,
                 Location = e.Location,
                 Date = e.Date,
-                Categories = e.Categories.Select(c => c.Id).ToList(),
+                Categories = e.Categories.Select(c => new LookupDto
+                {
+                    Id = c.Id,
+                    Details = c.Name
+                }).ToList(),
             }).ToList());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] EventDto newEvent)
+        public async Task<IActionResult> Create([FromBody] CreateEventDto newEvent)
         {
             if (ModelState.IsValid)
             {

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:awp/core/constants/connection.dart';
 import 'package:awp/core/models/category_model.dart';
-import 'package:awp/core/models/event_model.dart';
+import 'package:awp/core/models/create_event_model.dart';
 import 'package:awp/core/widgets/error_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +57,7 @@ class AddEventController extends GetxController {
   }
 
   void save() async {
-    final event = EventModel(
+    final event = CreateEventModel(
       name: titleController.text,
       description: descriptionController.text,
       cost: int.tryParse(taxController.text) ?? 0,
