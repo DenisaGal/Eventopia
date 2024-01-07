@@ -45,6 +45,8 @@ namespace EventopiaAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto newEvent)
         {
+            var newId = Guid.NewGuid();
+
             if (ModelState.IsValid)
             {
                 var newCategories = new List<Category>();
@@ -60,7 +62,7 @@ namespace EventopiaAPI.Controllers
 
                 _context.Events.Add(new Event
                 {
-                    Id = Guid.NewGuid(),
+                    Id = newId,
                     Name = newEvent.Name,
                     Description = newEvent.Description,
                     Cost = newEvent.Cost,
@@ -72,7 +74,16 @@ namespace EventopiaAPI.Controllers
 
                 await _context.SaveChangesAsync();
             }
-            return Ok(newEvent);
+            return Ok(new CreateEventDto
+            {
+                Id = newId,
+                Name = newEvent.Name,
+                Description = newEvent.Description,
+                Cost = newEvent.Cost,
+                Location = newEvent.Location,
+                Date = DateTime.SpecifyKind(newEvent.Date, DateTimeKind.Utc),
+                Categories = new List<Guid>()
+            });
         }
 
         [HttpPost]
@@ -130,8 +141,8 @@ namespace EventopiaAPI.Controllers
             return Ok();
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> AddImage(Guid Id, [FromBody] IFormFile file)
+        [HttpPatch("/{Id}")]
+        public async Task<IActionResult> AddImage([FromRoute] Guid Id, IFormFile file)
         {
             var dbEvent = await _context.Events.FirstOrDefaultAsync(e => e.Id == Id);
             if (dbEvent == null)
@@ -147,7 +158,6 @@ namespace EventopiaAPI.Controllers
             var ms = new MemoryStream();
             file.CopyTo(ms);
             var fileBytes = ms.ToArray();
-            //string s = Convert.ToBase64String(fileBytes);
 
             if (ModelState.IsValid)
             {

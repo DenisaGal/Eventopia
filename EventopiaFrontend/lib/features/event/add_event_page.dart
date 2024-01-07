@@ -165,7 +165,7 @@ class AddEventPage extends StatelessWidget {
                               decoration: const InputDecoration(
                                 hintText: 'Image',
                               ),
-                              controller: controller.templateUploadController,
+                              controller: controller.fileController,
                               autovalidateMode:
                                   controller.selectedFile.value != null
                                       ? AutovalidateMode.onUserInteraction
@@ -328,10 +328,9 @@ class AddEventPage extends StatelessWidget {
                     Row(
                       children: [
                         ElevatedButton.icon(
-                          onPressed: () {
+                          onPressed: () async {
                             if (controller.formKey.currentState!.validate()) {
-                              controller.save();
-                              Get.off(HomePage());
+                              await controller.save();
                             }
                           },
                           icon: const Icon(Icons.save),
