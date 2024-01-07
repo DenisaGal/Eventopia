@@ -1,5 +1,7 @@
 import 'package:awp/core/theme/colors.dart';
+import 'package:awp/features/login/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HeaderBar extends StatelessWidget {
   const HeaderBar({
@@ -25,47 +27,73 @@ class HeaderBar extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(
-              width: 10,
-            ),
-            InkWell(
-              onTap: onHomePressed,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    icon,
-                    color: AppColorScheme.white,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: AppColorScheme.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-            if (secondPage != null)
-              InkWell(
-                onTap: onSecondPressed,
-                child: Text(
-                  secondPage ?? '',
-                  style: const TextStyle(
-                    color: AppColorScheme.white,
-                    fontSize: 14,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                InkWell(
+                  onTap: onHomePressed,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        color: AppColorScheme.white,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: AppColorScheme.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                const SizedBox(
+                  width: 20,
+                ),
+                if (secondPage != null)
+                  InkWell(
+                    onTap: onSecondPressed,
+                    child: Text(
+                      secondPage ?? '',
+                      style: const TextStyle(
+                        color: AppColorScheme.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.offAll(LoginPage());
+                },
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(
+                                color: AppColorScheme.white)))),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 1,
+                    horizontal: 1,
+                  ),
+                  child: Text("Log out"),
+                ),
               ),
+            ),
           ],
         ),
       ),

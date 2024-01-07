@@ -14,269 +14,290 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          HeaderBar(
-            title: "Eventopia",
-            icon: Icons.home,
-            onHomePressed: () {
-              Get.offAll(HomePage());
-            },
-            secondPage: "My Events",
-            onSecondPressed: () {
-              Get.offAll(UserEventsPage());
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 50,
-                  child: Obx(
-                    () => ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: controller.categories.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final category = controller.categories[index];
+    final _scrollController = ScrollController();
 
-                        return Row(
-                          children: [
-                            Text(
-                              category.name,
-                              style:
-                                  const TextStyle(color: AppColorScheme.orange),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            )
-                          ],
-                        );
-                      },
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HeaderBar(
+              title: "Eventopia",
+              icon: Icons.home,
+              onHomePressed: () {
+                Get.offAll(HomePage());
+              },
+              secondPage: "My Events",
+              onSecondPressed: () {
+                Get.offAll(UserEventsPage());
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 50,
+                    child: Obx(
+                      () => ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: controller.categories.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final category = controller.categories[index];
+
+                          return Row(
+                            children: [
+                              Text(
+                                category.name,
+                                style: const TextStyle(
+                                    color: AppColorScheme.orange),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              )
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "Events",
-                  style: TextStyle(
-                      color: AppColorScheme.darkBlue,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Obx(
-                  () => ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: controller.events.length,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      var event = controller.events[index];
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Events",
+                    style: TextStyle(
+                        color: AppColorScheme.darkBlue,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Obx(
+                    () => Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: SizedBox(
+                        height: 620,
+                        width: 420,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          scrollDirection: Axis.vertical,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: controller.events.length,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            var event = controller.events[index];
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: AppColorScheme.darkRed),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            height: 300,
-                            width: 400,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  SizedBox(
-                                    height: 40,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Center(
-                                          child: Text(
-                                            event.name,
-                                            style: const TextStyle(
-                                                color: AppColorScheme.darkRed,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: AppColorScheme.darkRed),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  height: 300,
+                                  width: 400,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        SizedBox(
+                                          height: 40,
+                                          child: Stack(
+                                            children: <Widget>[
+                                              Center(
+                                                child: Text(
+                                                  event.name,
+                                                  style: const TextStyle(
+                                                      color: AppColorScheme
+                                                          .darkRed,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              ),
+                                              Container(
+                                                alignment: Alignment.topRight,
+                                                child: Obx(
+                                                  () => IconButton(
+                                                    icon: Icon(
+                                                        controller.userHasEvent(
+                                                                event.id)
+                                                            ? Icons.star_rounded
+                                                            : Icons
+                                                                .star_border_rounded,
+                                                        color: AppColorScheme
+                                                            .yellow,
+                                                        size: 28),
+                                                    onPressed: () async {
+                                                      await controller
+                                                          .editUserEvent(
+                                                              event.id);
+                                                    },
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          child: Obx(
-                                            () => IconButton(
-                                              icon: Icon(
-                                                  controller.userHasEvent(
-                                                          event.id)
-                                                      ? Icons.star_rounded
-                                                      : Icons
-                                                          .star_border_rounded,
-                                                  color: AppColorScheme.yellow,
-                                                  size: 28),
-                                              onPressed: () async {
-                                                await controller
-                                                    .editUserEvent(event.id);
-                                              },
-                                              splashColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              hoverColor: Colors.transparent,
+                                        Text(
+                                          event.description,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    const Text(
+                                                      "Location: ",
+                                                      style: TextStyle(
+                                                          color: AppColorScheme
+                                                              .darkBlue,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    Text(event.location),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    const Text(
+                                                      "Date: ",
+                                                      style: TextStyle(
+                                                          color: AppColorScheme
+                                                              .darkBlue,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    Text(
+                                                        "${event.date.day}/${event.date.month}/${event.date.year}"),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    const Text(
+                                                      "Fee: ",
+                                                      style: TextStyle(
+                                                          color: AppColorScheme
+                                                              .darkBlue,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    Text(event.cost.toString()),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
+                                            Flexible(
+                                              child: Image.asset(
+                                                event.name[0] == 'C'
+                                                    ? Paths.concert
+                                                    : Paths.hike,
+                                                height: 100,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
+                                            itemCount: event.categories?.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              final category =
+                                                  event.categories?[index];
+
+                                              return Row(
+                                                children: [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: AppColorScheme
+                                                              .orange),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        vertical: 4,
+                                                        horizontal: 8,
+                                                      ),
+                                                      child: Text(
+                                                        category?.details ?? "",
+                                                        style: const TextStyle(
+                                                            color:
+                                                                AppColorScheme
+                                                                    .orange),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  )
+                                                ],
+                                              );
+                                            },
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Text(
-                                    event.description,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "Location: ",
-                                                style: TextStyle(
-                                                    color:
-                                                        AppColorScheme.darkBlue,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              Text(event.location),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "Date: ",
-                                                style: TextStyle(
-                                                    color:
-                                                        AppColorScheme.darkBlue,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              Text(
-                                                  "${event.date.day}/${event.date.month}/${event.date.year}"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "Fee: ",
-                                                style: TextStyle(
-                                                    color:
-                                                        AppColorScheme.darkBlue,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              Text(event.cost.toString()),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Flexible(
-                                        child: Image.asset(
-                                          event.name[0] == 'C'
-                                              ? Paths.concert
-                                              : Paths.hike,
-                                          height: 100,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 30,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      physics:
-                                          const AlwaysScrollableScrollPhysics(),
-                                      itemCount: event.categories?.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        final categoryId =
-                                            event.categories?[index];
-
-                                        return Row(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color:
-                                                        AppColorScheme.orange),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 4,
-                                                  horizontal: 8,
-                                                ),
-                                                child: Text(
-                                                  controller.categories
-                                                      .firstWhere((c) =>
-                                                          c.id == categoryId)
-                                                      .name,
-                                                  style: const TextStyle(
-                                                      color: AppColorScheme
-                                                          .orange),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            )
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          )
-                        ],
-                      );
-                    },
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Visibility(
-                  visible: true, //TODO if user is admin
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Get.offAll(AddEventPage());
-                    },
-                    child: const Text("Add event"),
+                  const SizedBox(
+                    height: 20,
                   ),
-                )
-              ],
+                  Obx(
+                    () => Visibility(
+                      visible: controller.user.value?.isOrganizer ?? false,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.to(AddEventPage());
+                        },
+                        child: const Text("Add event"),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

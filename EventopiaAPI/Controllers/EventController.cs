@@ -34,12 +34,16 @@ namespace EventopiaAPI.Controllers
                 Cost = e.Cost,
                 Location = e.Location,
                 Date = e.Date,
-                Categories = e.Categories.Select(c => c.Id).ToList(),
+                Categories = e.Categories.Select(c => new LookupDto
+                {
+                    Id = c.Id,
+                    Details = c.Name
+                }).ToList(),
             }).ToList());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] EventDto newEvent)
+        public async Task<IActionResult> Create([FromBody] CreateEventDto newEvent)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +84,7 @@ namespace EventopiaAPI.Controllers
             }
 
             var user = await _context.Users.Include(u => u.Events).FirstOrDefaultAsync(m => m.Id == userId);
-            var userEvent = await _context.Events.FirstOrDefaultAsync(m => m.Id == eventId);
+            var userEvent = await _context.Events.Include(u => u.Categories).FirstOrDefaultAsync(m => m.Id == eventId);
             if (user == null || userEvent == null)
             {
                 return NotFound();
@@ -89,10 +93,36 @@ namespace EventopiaAPI.Controllers
             if (user.Events.Select(e => e.Id).ToList().Contains(eventId))
             {
                 user.Events.Remove(userEvent);
+
+                var categories = userEvent.Categories.Select(c => c.Id).ToList();
+                for (var i = 0; i < categories.Count; i++)
+                {
+                    var categoryId = categories[i];
+                    var preference = await _context.UserPreferences.FirstOrDefaultAsync(m => m.UserId == userId && m.CategoryId == categoryId);
+                    if (preference == null)
+                    {
+                        return NotFound();
+                    }
+                    preference.Rating--;
+                    _context.Update(preference);
+                }
             }
             else
             {
                 user.Events.Add(userEvent);
+
+                var categories = userEvent.Categories.Select(c => c.Id).ToList();
+                for(var i = 0; i < categories.Count; i++)
+                {
+                    var categoryId = categories[i];
+                    var preference = await _context.UserPreferences.FirstOrDefaultAsync(m => m.UserId == userId && m.CategoryId == categoryId);
+                    if (preference == null)
+                    {
+                        return NotFound();
+                    }
+                    preference.Rating++;
+                    _context.Update(preference);
+                }
             }
 
             await _context.SaveChangesAsync();

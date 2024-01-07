@@ -157,60 +157,139 @@ class AddEventPage extends StatelessWidget {
                     ),
                     SizedBox(
                       height: 50,
-                      child: Obx(
-                        () => ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: controller.categories.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final category = controller.categories[index];
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Obx(
+                              () => ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: controller.categories.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final category = controller.categories[index];
 
-                            return Row(
-                              children: [
-                                Obx(
-                                  () => InkWell(
-                                    onTap: () {
-                                      controller
-                                          .editSelectedCategories(category.id);
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: !controller.selectedCategories
-                                                  .contains(category.id)
-                                              ? Border.all(
-                                                  color: AppColorScheme.orange)
-                                              : null,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: !controller.selectedCategories
-                                                  .contains(category.id)
-                                              ? AppColorScheme.white
-                                              : AppColorScheme.orange),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 4,
-                                          horizontal: 8,
-                                        ),
-                                        child: Text(
-                                          category.name,
-                                          style: TextStyle(
-                                              color: !controller
-                                                      .selectedCategories
-                                                      .contains(category.id)
-                                                  ? AppColorScheme.orange
-                                                  : AppColorScheme.white),
+                                  return Row(
+                                    children: [
+                                      Obx(
+                                        () => InkWell(
+                                          onTap: () {
+                                            controller.editSelectedCategories(
+                                                category.id ?? '');
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                border: !controller
+                                                        .selectedCategories
+                                                        .contains(category.id)
+                                                    ? Border.all(
+                                                        color: AppColorScheme
+                                                            .orange)
+                                                    : null,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: !controller
+                                                        .selectedCategories
+                                                        .contains(category.id)
+                                                    ? AppColorScheme.white
+                                                    : AppColorScheme.orange),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 4,
+                                                horizontal: 8,
+                                              ),
+                                              child: Text(
+                                                category.name,
+                                                style: TextStyle(
+                                                    color: !controller
+                                                            .selectedCategories
+                                                            .contains(
+                                                                category.id)
+                                                        ? AppColorScheme.orange
+                                                        : AppColorScheme.white),
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                      const SizedBox(
+                                        width: 10,
+                                      )
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () async {
+                                await Get.dialog(
+                                  AlertDialog(
+                                    title: const Text(
+                                      "New category",
+                                      style: TextStyle(
+                                          color: AppColorScheme.darkBlue),
                                     ),
+                                    content: TextFormField(
+                                      controller: controller.categoryController,
+                                      decoration: const InputDecoration(
+                                        labelText: "Name",
+                                      ),
+                                      key: controller.categoryKey,
+                                      onChanged: (value) {
+                                        if (controller.categoryKey.currentState!
+                                            .hasError) {
+                                          controller.categoryKey.currentState!
+                                              .validate();
+                                        }
+                                      },
+                                      validator: (value) {
+                                        var mandatoryValidator =
+                                            InputValidator.validate(
+                                                value, "Mandatory input");
+
+                                        if (mandatoryValidator != null &&
+                                            mandatoryValidator.isNotEmpty) {
+                                          return mandatoryValidator;
+                                        }
+
+                                        if (controller.categories
+                                            .map((c) => c.name)
+                                            .any((c) => c == value)) {
+                                          return "Category already exists";
+                                        }
+
+                                        return null;
+                                      },
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(255),
+                                      ],
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.center,
+                                    actions: [
+                                      ElevatedButton(
+                                        child: const Text("Add"),
+                                        onPressed: () {
+                                          if (controller
+                                              .categoryKey.currentState!
+                                              .validate()) {
+                                            controller.addCategory();
+                                            controller.categoryController
+                                                .clear();
+                                            Get.back();
+                                          }
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                )
-                              ],
-                            );
-                          },
-                        ),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.add_rounded,
+                                color: AppColorScheme.orange,
+                              )),
+                        ],
                       ),
                     ),
                     const SizedBox(
@@ -222,7 +301,7 @@ class AddEventPage extends StatelessWidget {
                           onPressed: () {
                             if (controller.formKey.currentState!.validate()) {
                               controller.save();
-                              Get.offAll(HomePage());
+                              Get.off(HomePage());
                             }
                           },
                           icon: const Icon(Icons.save),
@@ -234,7 +313,7 @@ class AddEventPage extends StatelessWidget {
                         OutlinedButton(
                           onPressed: () {
                             controller.clearForm();
-                            Get.offAll(HomePage());
+                            Get.off(HomePage());
                           },
                           child: const Text("Cancel"),
                         ),

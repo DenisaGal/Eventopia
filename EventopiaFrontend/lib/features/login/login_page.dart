@@ -2,6 +2,7 @@ import 'package:awp/core/constants/paths.dart';
 import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/validators/input_validator.dart';
 import 'package:awp/features/login/login_controller.dart';
+import 'package:awp/features/register/register_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +27,7 @@ class LoginPage extends StatelessWidget {
                 Flexible(
                   child: Image.asset(
                     Paths.logo,
-                    height: 500,
+                    height: 450,
                   ),
                 ),
                 const Text(
@@ -147,18 +148,29 @@ class LoginPage extends StatelessWidget {
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
-                        const SizedBox(height: 15),
-                        RichText(
-                          text: TextSpan(
-                            text: 'Register',
-                            style: const TextStyle(color: AppColorScheme.red),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                controller.emailController.clear();
-                                controller.passwordController.clear();
-                                //Get.offAll(RegisterPage());
-                              },
-                          ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Don't have an account yet?",
+                              style: TextStyle(color: AppColorScheme.darkBlue),
+                            ),
+                            const SizedBox(width: 5),
+                            RichText(
+                              text: TextSpan(
+                                text: 'Register',
+                                style:
+                                    const TextStyle(color: AppColorScheme.red),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    controller.emailController.clear();
+                                    controller.passwordController.clear();
+                                    Get.offAll(RegisterPage());
+                                  },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

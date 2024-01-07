@@ -1,5 +1,6 @@
 ﻿using Eurofins.Crescendo.Web.Application.Users.Shared;
 using EventopiaAPI.DB;
+using EventopiaAPI.DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
@@ -106,18 +107,33 @@ namespace EventopiaAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserDto newUser)
         {
+            var newId = Guid.NewGuid();
+
             if (ModelState.IsValid)
             {
                 _context.Users.Add(new User
                 {
-                    Id = Guid.NewGuid(),
+                    Id = newId,
                     EmailAddress = newUser.Email,
                     Password = BCrypt.Net.BCrypt.EnhancedHashPassword(newUser.Password, 13),
                     IsOrganizer = newUser.IsOrganizer,
                 });
+
+                var categories = await _context.Categories.ToListAsync();
+                foreach (var category in categories)
+                {
+                    _context.UserPreferences.Add(new UserPreference
+                    {
+                        UserId = newId,
+                        CategoryId = category.Id,
+                        Rating = 0
+                    });
+                }
+
                 await _context.SaveChangesAsync();
             }
-            return Ok(newUser);
+
+            return Ok(newId);
         }
 
         //Login
@@ -135,7 +151,7 @@ namespace EventopiaAPI.Controllers
                 return NotFound();
             }
 
-            if (newUser.Password != user.Password) /*(!BCrypt.Net.BCrypt.EnhancedVerify(newUser.Password, user.Password))*/
+            if (!BCrypt.Net.BCrypt.EnhancedVerify(newUser.Password, user.Password))
             {
                 return BadRequest();
             }

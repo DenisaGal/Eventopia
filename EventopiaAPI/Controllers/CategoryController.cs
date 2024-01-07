@@ -1,4 +1,6 @@
-﻿using EventopiaAPI.DB;
+﻿using Eurofins.Crescendo.Web.Application.Users.Shared;
+using EventopiaAPI.DB;
+using EventopiaAPI.DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +21,39 @@ namespace EventopiaAPI.Controllers
         public async Task<IActionResult> GetCategories()
         {
             return _context.Categories != null ? Ok(await _context.Categories.ToListAsync()) : Problem("Entity set 'EventopiaDBContext.Categories'  is null.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CategoryDto newCategory)
+        {
+            var newId = Guid.NewGuid();
+
+            if (ModelState.IsValid)
+            {
+                _context.Categories.Add(new Category
+                {
+                    Id = newId,
+                    Name = newCategory.Name
+                });
+
+                var users = await _context.Users.ToListAsync();
+                foreach(var user in users)
+                {
+                    _context.UserPreferences.Add(new UserPreference
+                    {
+                        UserId = user.Id,
+                        CategoryId = newId,
+                        Rating = 0
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            return Ok(new CategoryDto 
+            { 
+                Id = newId, 
+                Name = newCategory.Name
+            });
         }
     }
 }

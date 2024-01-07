@@ -1,6 +1,6 @@
 ﻿namespace Eurofins.Crescendo.Web.Application.Users.Shared
 {
-    public class EventDto
+    public class CreateEventDto
     {
         public Guid? Id { get; set; }
 
@@ -14,6 +14,6 @@
 
         public DateTime Date { get; set; }
 
-        public IList<LookupDto> Categories { get; set; } = null!;
+        public IList<Guid> Categories { get; set; } = null!;
     }
 }

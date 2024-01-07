@@ -66,7 +66,7 @@ class HomeController extends GetxController {
 
   Future<void> editUserEvent(String? eventId) async {
     try {
-      final response = await dio.post(
+      await dio.post(
           '${Connection.baseUrl}/Event/EditUserEvents?userId=$userId&eventId=$eventId');
       await _loadUser(userId);
     } catch (_) {
