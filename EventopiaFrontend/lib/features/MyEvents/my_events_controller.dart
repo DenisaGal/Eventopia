@@ -12,6 +12,9 @@ import 'package:get/get.dart';
 class MyEventsController extends GetxController {
   late final Dio dio;
   late RxList<EventModel> events = <EventModel>[].obs;
+  late RxList<EventModel> eventsToday = <EventModel>[].obs;
+  late RxList<EventModel> pastEvents = <EventModel>[].obs;
+  late RxList<EventModel> futureEvents = <EventModel>[].obs;
   late RxList<CategoryModel> categories = <CategoryModel>[].obs;
   late final TextEditingController categoryController;
   late final GlobalKey<FormFieldState> categoryKey;
@@ -35,7 +38,8 @@ class MyEventsController extends GetxController {
 
   Future<void> _loadEvents() async {
     try {
-      var id = 'b4d028d6-a742-43ad-8977-51d7f69a284c';
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
       final response = await dio.get('${Connection.baseUrl}/Event/GetUserEvents?userId=$userId');
       events.clear();
       images.clear();
@@ -44,6 +48,31 @@ class MyEventsController extends GetxController {
           .toList();
 
       for (var event in dbEvents) {
+        var event_date = DateTime(event.date.year, event.date.month, event.date.day);
+        if(calculateDifference(event.date) == 0){
+          eventsToday.add(event);
+          final imageResponse = await dio.get(
+            '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
+            options: Options(responseType: ResponseType.bytes),
+          );
+          images.add(Uint8List.fromList(imageResponse.data));
+        }
+        else if(calculateDifference(event.date) > 1){
+          futureEvents.add(event);
+          final imageResponse = await dio.get(
+            '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
+            options: Options(responseType: ResponseType.bytes),
+          );
+          images.add(Uint8List.fromList(imageResponse.data));
+        }
+        else if(calculateDifference(event.date) < -1){
+          pastEvents.add(event);
+          final imageResponse = await dio.get(
+            '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
+            options: Options(responseType: ResponseType.bytes),
+          );
+          images.add(Uint8List.fromList(imageResponse.data));
+        }
         events.add(event);
         final imageResponse = await dio.get(
           '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
@@ -102,29 +131,6 @@ class MyEventsController extends GetxController {
     }
   }
 
-  void filter() async {
-    // Event/GetEventsByCategory?categoryIds=3fa85f64-5717-4562-b3fc-2c963f66afa6&categoryIds=3fa85f64-5717-4562-b3fc-2c963f66afa6' \
-    var url = '';
-    var param = 'categoryIds=';
-    var and = '&';
-    for(var category in selectedCategories){
-      url = url + param + category + and;
-    }
-    url = url.substring(0, max(0, url.length - 1));
-
-    try {
-      final response = await dio.get('${Connection.baseUrl}/Event/GetEventsByCategory?$url');
-
-      events.clear();
-      List<EventModel> dbEvents = (response.data as List)
-          .map((item) => EventModel.fromJson(item))
-          .toList();
-      events.addAll(dbEvents);
-    } catch (_) {
-      await ErrorDialog.show("Failed to filter.");
-    }
-  }
-
   void filterEvents() async {
       var id = 'b4d028d6-a742-43ad-8977-51d7f69a284c';
       try {
@@ -139,4 +145,9 @@ class MyEventsController extends GetxController {
         await ErrorDialog.show("Failed to fetch your events.");
       }
     }
+
+  int calculateDifference(DateTime date) {
+    DateTime now = DateTime.now();
+    return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+  }
 }
