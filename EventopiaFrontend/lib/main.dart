@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Eventopia',
       theme: ThemeData(
+          useMaterial3: false,
           colorScheme: ColorScheme.fromSeed(
             seedColor: AppColorScheme.blue,
             primary: AppColorScheme.blue,
