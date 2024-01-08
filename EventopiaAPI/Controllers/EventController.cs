@@ -1,8 +1,10 @@
 ﻿﻿using Eurofins.Crescendo.Web.Application.Users.Shared;
 using EventopiaAPI.DB;
 using EventopiaAPI.DB.Models;
+using EventopiaAPI.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NuGet.Protocol.Core.Types;
 
 namespace EventopiaAPI.Controllers
@@ -78,6 +80,36 @@ namespace EventopiaAPI.Controllers
 
         }
         
+        [HttpGet(Name = "GetUserEvents")]
+        public async Task<IActionResult> GetUserEvents([FromQuery] Guid userId)
+        {
+            if (_context.Events == null)
+                return Problem("Entity set 'EventopiaDBContext.Events'  is null.");
+
+            var userEvents = await _context.Events.Where(e => e.Users.Any(u => u.Id == userId)).Include(e => e.Categories).ToListAsync();
+
+            if (userEvents == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userEvents.Select(e => new UserEventsDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                Cost = e.Cost,
+                Location = e.Location,
+                Date = e.Date,
+                UserId = userId,
+                Categories = e.Categories.Select(c => new LookupDto
+                {
+                    Id = c.Id,
+                    Details = c.Names
+                }).ToList(),
+            }).ToList());
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto newEvent)
         {
