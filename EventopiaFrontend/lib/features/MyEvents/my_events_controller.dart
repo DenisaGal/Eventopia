@@ -11,9 +11,7 @@ import 'package:get/get.dart';
 
 class MyEventsController extends GetxController {
   late final Dio dio;
-  late RxList<EventModel> events = <EventModel>[].obs;
   late RxList<EventModel> eventsToday = <EventModel>[].obs;
-  late RxList<EventModel> pastEvents = <EventModel>[].obs;
   late RxList<EventModel> futureEvents = <EventModel>[].obs;
   late RxList<CategoryModel> categories = <CategoryModel>[].obs;
   late final TextEditingController categoryController;
@@ -21,8 +19,9 @@ class MyEventsController extends GetxController {
   RxBool isSelected = false.obs;
   late Rxn<UserDetailsModel> user = Rxn<UserDetailsModel>();
   late String userId;
-  late RxList<String> selectedCategories = <String>[].obs;
-  late RxList<Uint8List> images = RxList<Uint8List>();
+  late RxList<Uint8List> imagesToday = RxList<Uint8List>();
+  late RxList<Uint8List> imagesFuture = RxList<Uint8List>();
+  late RxList<Uint8List> defaultImage = RxList<Uint8List>();
 
   @override
   void onInit() async {
@@ -38,24 +37,23 @@ class MyEventsController extends GetxController {
 
   Future<void> _loadEvents() async {
     try {
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
       final response = await dio.get('${Connection.baseUrl}/Event/GetUserEvents?userId=$userId');
-      events.clear();
-      images.clear();
+      eventsToday.clear();
+      imagesToday.clear();
+      futureEvents.clear();
+      imagesFuture.clear();
       List<EventModel> dbEvents = (response.data as List)
           .map((item) => EventModel.fromJson(item))
           .toList();
 
       for (var event in dbEvents) {
-        var event_date = DateTime(event.date.year, event.date.month, event.date.day);
         if(calculateDifference(event.date) == 0){
           eventsToday.add(event);
           final imageResponse = await dio.get(
             '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
             options: Options(responseType: ResponseType.bytes),
           );
-          images.add(Uint8List.fromList(imageResponse.data));
+          imagesToday.add(Uint8List.fromList(imageResponse.data));
         }
         else if(calculateDifference(event.date) > 1){
           futureEvents.add(event);
@@ -63,22 +61,8 @@ class MyEventsController extends GetxController {
             '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
             options: Options(responseType: ResponseType.bytes),
           );
-          images.add(Uint8List.fromList(imageResponse.data));
+          imagesFuture.add(Uint8List.fromList(imageResponse.data));
         }
-        else if(calculateDifference(event.date) < -1){
-          pastEvents.add(event);
-          final imageResponse = await dio.get(
-            '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
-            options: Options(responseType: ResponseType.bytes),
-          );
-          images.add(Uint8List.fromList(imageResponse.data));
-        }
-        events.add(event);
-        final imageResponse = await dio.get(
-          '${Connection.baseUrl}/Event/GetImage/?eventId=${event.id}',
-          options: Options(responseType: ResponseType.bytes),
-        );
-        images.add(Uint8List.fromList(imageResponse.data));
       }
     } catch (_) {
       await ErrorDialog.show("Failed to load events.");
@@ -122,29 +106,6 @@ class MyEventsController extends GetxController {
   bool userHasEvent(String? eventId) {
     return user.value?.events.map((e) => e.id).contains(eventId) ?? false;
   }
-
-  void editSelectedCategories(String categoryId) {
-    if (selectedCategories.contains(categoryId)) {
-      selectedCategories.remove(categoryId);
-    } else {
-      selectedCategories.add(categoryId);
-    }
-  }
-
-  void filterEvents() async {
-      var id = 'b4d028d6-a742-43ad-8977-51d7f69a284c';
-      try {
-        final response = await dio.get('${Connection.baseUrl}Event/GetUserEvents?userId=$id');
-
-        events.clear();
-        List<EventModel> dbEvents = (response.data as List)
-            .map((item) => EventModel.fromJson(item))
-            .toList();
-        events.addAll(dbEvents);
-      } catch (_) {
-        await ErrorDialog.show("Failed to fetch your events.");
-      }
-    }
 
   int calculateDifference(DateTime date) {
     DateTime now = DateTime.now();

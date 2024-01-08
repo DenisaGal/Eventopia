@@ -266,7 +266,8 @@ class HomePage extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                            Flexible(
+                                            Obx(
+                                                  () => Flexible(
                                               child: Image.memory(
                                                   index <
                                                           controller
@@ -274,7 +275,7 @@ class HomePage extends StatelessWidget {
                                                       ? controller.images[index]
                                                       : Uint8List(0),
                                                   height: 100),
-                                            ),
+                                            )),
                                           ],
                                         ),
                                         SizedBox(
