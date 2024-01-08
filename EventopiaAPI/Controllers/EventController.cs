@@ -105,7 +105,7 @@ namespace EventopiaAPI.Controllers
                 Categories = e.Categories.Select(c => new LookupDto
                 {
                     Id = c.Id,
-                    Details = c.Names
+                    Details = c.Name
                 }).ToList(),
             }).ToList());
         }
