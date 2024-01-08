@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
+import 'package:awp/features/home/home_page.dart';
+import 'package:awp/features/user_events/user_events_page.dart';
 import 'package:awp/features/MyEvents/my_events_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,9 +21,20 @@ class MyEventsPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const HeaderBar(
-            title: "My events",
-            icon: Icons.event_available_rounded,
+          HeaderBar(
+            title: "Eventopia",
+            icon: Icons.home,
+            onHomePressed: () {
+              Get.offAll(HomePage());
+            },
+            secondPage: "Recommended",
+            onSecondPressed: () {
+              Get.to(() => UserEventsPage(), arguments: controller.userId);
+            },
+            thirdPage: "My events",
+            onThirdPressed: () {
+              Get.to(() => MyEventsPage(), arguments: controller.userId);
+            },
           ),
           const SizedBox(
             height: 20,

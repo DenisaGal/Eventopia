@@ -98,6 +98,7 @@ class MyEventsController extends GetxController {
       await dio.post(
           '${Connection.baseUrl}/Event/EditUserEvents?userId=$userId&eventId=$eventId');
       await _loadUser(userId);
+      await _loadEvents();
     } catch (_) {
       await ErrorDialog.show("Failed to edit user events.");
     }

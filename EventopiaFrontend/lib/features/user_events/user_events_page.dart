@@ -1,6 +1,8 @@
 import 'package:awp/core/constants/paths.dart';
 import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
+import 'package:awp/features/home/home_page.dart';
+import 'package:awp/features/MyEvents/my_events.dart';
 import 'package:awp/features/user_events/user_events_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,12 +18,20 @@ class UserEventsPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const HeaderBar(
-            title: "Recommended events",
-            icon: Icons.event_available_rounded,
-          ),
-          const SizedBox(
-            height: 20,
+          HeaderBar(
+            title: "Eventopia",
+            icon: Icons.home,
+            onHomePressed: () {
+              Get.offAll(HomePage());
+            },
+            secondPage: "Recommended",
+            onSecondPressed: () {
+              Get.to(() => UserEventsPage(), arguments: controller.userId);
+            },
+            thirdPage: "My events",
+            onThirdPressed: () {
+              Get.to(() => MyEventsPage(), arguments: controller.userId);
+            },
           ),
           Padding(
             padding: const EdgeInsets.all(10),
