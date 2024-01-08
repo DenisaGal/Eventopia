@@ -11,6 +11,8 @@ class HeaderBar extends StatelessWidget {
     this.onHomePressed,
     this.secondPage,
     this.onSecondPressed,
+    this.thirdPage,
+    this.onThirdPressed,
   });
 
   final String title;
@@ -18,6 +20,8 @@ class HeaderBar extends StatelessWidget {
   final void Function()? onHomePressed;
   final String? secondPage;
   final void Function()? onSecondPressed;
+  final String? thirdPage;
+  final void Function()? onThirdPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +69,20 @@ class HeaderBar extends StatelessWidget {
                     onTap: onSecondPressed,
                     child: Text(
                       secondPage ?? '',
+                      style: const TextStyle(
+                        color: AppColorScheme.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                const SizedBox(
+                  width: 20,
+                ),
+                if (thirdPage != null)
+                  InkWell(
+                    onTap: onThirdPressed,
+                    child: Text(
+                      thirdPage ?? '',
                       style: const TextStyle(
                         color: AppColorScheme.white,
                         fontSize: 14,

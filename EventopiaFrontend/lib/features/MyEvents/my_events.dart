@@ -2,41 +2,30 @@ import 'dart:typed_data';
 
 import 'package:awp/core/theme/colors.dart';
 import 'package:awp/core/widgets/app_bar.dart';
-import 'package:awp/features/event/add_event_page.dart';
-import 'package:awp/features/home/home_controller.dart';
-import 'package:awp/features/user_events/user_events_page.dart';
-import 'package:awp/features/MyEvents/my_events.dart';
+import 'package:awp/features/MyEvents/my_events_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class MyEventsPage extends StatelessWidget {
+  MyEventsPage({super.key});
 
-  final controller = Get.put(HomeController());
+  final controller = Get.put(MyEventsController());
 
   @override
   Widget build(BuildContext context) {
     final _scrollController = ScrollController();
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            HeaderBar(
-              title: "Eventopia",
-              icon: Icons.home,
-              onHomePressed: () {
-                Get.offAll(HomePage());
-              },
-              secondPage: "Recommended",
-              onSecondPressed: () {
-                Get.to(() => UserEventsPage(), arguments: controller.userId);
-              },
-              thirdPage: "My events",
-              onThirdPressed: () {
-                Get.to(() => MyEventsPage(), arguments: controller.userId);
-              },
-            ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const HeaderBar(
+            title: "My events",
+            icon: Icons.event_available_rounded,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -127,7 +116,7 @@ class HomePage extends StatelessWidget {
                     height: 20,
                   ),
                   Obx(
-                    () => Scrollbar(
+                        () => Scrollbar(
                       controller: _scrollController,
                       thumbVisibility: true,
                       child: SizedBox(
@@ -163,7 +152,7 @@ class HomePage extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
+                                      MainAxisAlignment.spaceAround,
                                       children: [
                                         SizedBox(
                                           height: 40,
@@ -177,33 +166,33 @@ class HomePage extends StatelessWidget {
                                                           .darkRed,
                                                       fontSize: 20,
                                                       fontWeight:
-                                                          FontWeight.w600),
+                                                      FontWeight.w600),
                                                 ),
                                               ),
                                               Container(
                                                 alignment: Alignment.topRight,
                                                 child: Obx(
-                                                  () => IconButton(
+                                                      () => IconButton(
                                                     icon: Icon(
                                                         controller.userHasEvent(
-                                                                event.id)
+                                                            event.id)
                                                             ? Icons.star_rounded
                                                             : Icons
-                                                                .star_border_rounded,
+                                                            .star_border_rounded,
                                                         color: AppColorScheme
                                                             .yellow,
                                                         size: 28),
                                                     onPressed: () async {
                                                       await controller
                                                           .editUserEvent(
-                                                              event.id);
+                                                          event.id);
                                                     },
                                                     splashColor:
-                                                        Colors.transparent,
+                                                    Colors.transparent,
                                                     highlightColor:
-                                                        Colors.transparent,
+                                                    Colors.transparent,
                                                     hoverColor:
-                                                        Colors.transparent,
+                                                    Colors.transparent,
                                                   ),
                                                 ),
                                               ),
@@ -218,11 +207,11 @@ class HomePage extends StatelessWidget {
                                         ),
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                          MainAxisAlignment.spaceAround,
                                           children: [
                                             Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
+                                              MainAxisAlignment.spaceAround,
                                               children: [
                                                 Row(
                                                   children: [
@@ -232,7 +221,7 @@ class HomePage extends StatelessWidget {
                                                           color: AppColorScheme
                                                               .darkBlue,
                                                           fontWeight:
-                                                              FontWeight.w600),
+                                                          FontWeight.w600),
                                                     ),
                                                     Text(event.location),
                                                   ],
@@ -245,7 +234,7 @@ class HomePage extends StatelessWidget {
                                                           color: AppColorScheme
                                                               .darkBlue,
                                                           fontWeight:
-                                                              FontWeight.w600),
+                                                          FontWeight.w600),
                                                     ),
                                                     Text(
                                                         "${event.date.day}/${event.date.month}/${event.date.year}"),
@@ -259,7 +248,7 @@ class HomePage extends StatelessWidget {
                                                           color: AppColorScheme
                                                               .darkBlue,
                                                           fontWeight:
-                                                              FontWeight.w600),
+                                                          FontWeight.w600),
                                                     ),
                                                     Text(event.cost.toString()),
                                                   ],
@@ -269,8 +258,8 @@ class HomePage extends StatelessWidget {
                                             Flexible(
                                               child: Image.memory(
                                                   index <
-                                                          controller
-                                                              .images.length
+                                                      controller
+                                                          .images.length
                                                       ? controller.images[index]
                                                       : Uint8List(0),
                                                   height: 100),
@@ -282,12 +271,12 @@ class HomePage extends StatelessWidget {
                                           child: ListView.builder(
                                             scrollDirection: Axis.horizontal,
                                             physics:
-                                                const AlwaysScrollableScrollPhysics(),
+                                            const AlwaysScrollableScrollPhysics(),
                                             itemCount: event.categories?.length,
                                             itemBuilder: (BuildContext context,
                                                 int index) {
                                               final category =
-                                                  event.categories?[index];
+                                              event.categories?[index];
 
                                               return Row(
                                                 children: [
@@ -297,8 +286,8 @@ class HomePage extends StatelessWidget {
                                                           color: AppColorScheme
                                                               .orange),
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
+                                                      BorderRadius.circular(
+                                                          8),
                                                     ),
                                                     child: Padding(
                                                       padding: const EdgeInsets
@@ -310,8 +299,8 @@ class HomePage extends StatelessWidget {
                                                         category?.details ?? "",
                                                         style: const TextStyle(
                                                             color:
-                                                                AppColorScheme
-                                                                    .orange),
+                                                            AppColorScheme
+                                                                .orange),
                                                       ),
                                                     ),
                                                   ),
@@ -334,7 +323,7 @@ class HomePage extends StatelessWidget {
                             );
                           },
                           gridDelegate:
-                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 300, mainAxisExtent: 400,
                             //childAspectRatio: 3 / 2,
                             crossAxisSpacing: 20,
@@ -347,23 +336,11 @@ class HomePage extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  Obx(
-                    () => Visibility(
-                      visible: controller.user.value?.isOrganizer ?? false,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Get.to(AddEventPage());
-                        },
-                        child: const Text("Add event"),
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
