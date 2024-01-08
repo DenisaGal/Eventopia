@@ -5,13 +5,16 @@ import 'package:awp/core/widgets/app_bar.dart';
 import 'package:awp/features/event/add_event_page.dart';
 import 'package:awp/features/home/home_controller.dart';
 import 'package:awp/features/user_events/user_events_page.dart';
+import 'package:awp/features/map/map_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final controller = Get.put(HomeController());
+  //final GoogleMapController mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +33,10 @@ class HomePage extends StatelessWidget {
               secondPage: "Recommended",
               onSecondPressed: () {
                 Get.to(() => UserEventsPage(), arguments: controller.userId);
+              },
+              thirdPage: "Map",
+              onThirdPressed: () {
+                Get.to(() => MapPage());
               },
             ),
             Padding(
