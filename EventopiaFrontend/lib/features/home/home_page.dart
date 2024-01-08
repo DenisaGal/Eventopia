@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
               onSecondPressed: () {
                 Get.to(() => UserEventsPage(), arguments: controller.userId);
               },
-              thirdPage: "Map",
+              thirdPage: "Events near me",
               onThirdPressed: () {
                 Get.to(() => MapPage());
               },
